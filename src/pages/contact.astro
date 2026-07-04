@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import IntakeForm from '../components/IntakeForm.astro';
+import { smsHref, SMS_DISPLAY, BRAND } from '../config';
+---
+<Base
+  title={`Contact — ${BRAND.name}`}
+  description="Text Marco directly, or lock in a 15-minute strategy call. He responds within the hour, not days."
+  headerTone="light"
+>
+  <section class="contact section">
+    <div class="container contact__grid">
+      <!-- Left: the promise -->
+      <div class="contact__left">
+        <p class="eyebrow">Let's talk</p>
+        <h1 class="contact__title">The fastest way in is a text.</h1>
+        <p class="contact__lead">
+          It's genuinely how I move quickest — the same way most of my clients already reach me.
+          Prefer to give more context first? Fill out the short form and I'll come in with a plan.
+        </p>
+
+        <a href={smsHref()} class="contact__text-cta">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/></svg>
+          <span>
+            <strong>Text Marco</strong>
+            <em>{SMS_DISPLAY}</em>
+          </span>
+        </a>
+
+        <ul class="contact__promises">
+          <li><span>⚡</span> I respond within the hour, not days later.</li>
+          <li><span>🎯</span> A quick 15-minute call tells us both if it's a fit.</li>
+          <li><span>🤝</span> No pressure, no pitch — straight answers only.</li>
+        </ul>
+      </div>
+
+      <!-- Right: the form -->
+      <div class="contact__right">
+        <div class="contact__form-head">
+          <h2>Lock in a 15-minute strategy session</h2>
+          <p>Five quick questions so I show up to our call already knowing your situation.</p>
+        </div>
+        <IntakeForm />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact__grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+
+  .contact__title { font-size: var(--step-3); margin-bottom: 1rem; }
+  .contact__lead { color: var(--muted); font-size: var(--step-1); }
+
+  .contact__text-cta {
+    display: inline-flex; align-items: center; gap: 1rem;
+    margin: 1.5rem 0 2rem;
+    padding: 1.1rem 1.5rem;
+    background: var(--obsidian); color: #fff;
+    border-radius: var(--radius-lg);
+    transition: transform 0.2s var(--ease);
+  }
+  .contact__text-cta:hover { transform: translateY(-2px); }
+  .contact__text-cta svg { color: var(--crimson); flex: none; }
+  .contact__text-cta strong { display: block; font-size: 1.05rem; }
+  .contact__text-cta em { font-style: normal; color: rgba(255,255,255,0.65); font-size: 0.9rem; }
+
+  .contact__promises { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+  .contact__promises li { display: flex; align-items: center; gap: 0.75rem; color: var(--ink); font-weight: 500; }
+  .contact__promises span { font-size: 1.05rem; }
+
+  .contact__form-head { margin-bottom: 1.5rem; }
+  .contact__form-head h2 { font-size: var(--step-2); margin-bottom: 0.4rem; }
+  .contact__form-head p { color: var(--muted); margin: 0; }
+
+  @media (max-width: 900px) {
+    .contact__grid { grid-template-columns: 1fr; }
+  }
+</style>

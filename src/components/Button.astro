@@ -1,0 +1,73 @@
+---
+// Shared button/link. Primary = crimson fill. Outline = bordered.
+// Renders <a> (default) — pass `href`. Set `variant` and `tone`.
+interface Props {
+  href: string;
+  variant?: 'primary' | 'outline';
+  tone?: 'dark' | 'light'; // outline tone: dark text on light bg vs light on dark
+  class?: string;
+  dataSms?: boolean; // adds the phone glyph + aria for text CTAs
+}
+const {
+  href,
+  variant = 'primary',
+  tone = 'dark',
+  class: className = '',
+  dataSms = false,
+} = Astro.props;
+---
+<a
+  href={href}
+  class={`btn btn--${variant} btn--${tone} ${className}`}
+>
+  {dataSms && (
+    <svg class="btn__glyph" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/>
+    </svg>
+  )}
+  <span><slot /></span>
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--step-0);
+    letter-spacing: 0.01em;
+    padding: 0.95rem 1.7rem;
+    border-radius: var(--radius);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+                border-color var(--dur) var(--ease), transform 0.15s var(--ease);
+    text-align: center;
+  }
+  .btn:active { transform: translateY(1px); }
+
+  .btn--primary {
+    background: var(--crimson);
+    color: var(--white);
+    border-color: var(--crimson);
+  }
+  .btn--primary:hover { background: var(--crimson-hover); border-color: var(--crimson-hover); }
+
+  .btn--outline.btn--dark {
+    background: transparent;
+    color: var(--ink);
+    border-color: rgba(0, 0, 0, 0.28);
+  }
+  .btn--outline.btn--dark:hover { border-color: var(--ink); }
+
+  .btn--outline.btn--light {
+    background: transparent;
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .btn--outline.btn--light:hover { border-color: var(--white); background: rgba(255, 255, 255, 0.08); }
+
+  .btn__glyph { flex: none; margin-top: -1px; }
+</style>

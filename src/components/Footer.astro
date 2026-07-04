@@ -1,0 +1,97 @@
+---
+import Logo from './Logo.astro';
+import { NAV, smsHref, SMS_DISPLAY, BRAND } from '../config';
+const year = 2026; // build-time constant; bump on rebuild
+---
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <Logo variant="lockup" tone="light" />
+      <p class="site-footer__tag">{BRAND.tagline}</p>
+      <p class="site-footer__markets">{BRAND.markets}</p>
+    </div>
+
+    <div class="site-footer__cols">
+      <nav class="site-footer__col" aria-label="Footer">
+        <h4>Explore</h4>
+        {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <div class="site-footer__col">
+        <h4>Reach Marco</h4>
+        <a href={smsHref()} class="site-footer__text">Text {SMS_DISPLAY}</a>
+        <a href="/contact">Book a 15-min call</a>
+        <p class="site-footer__note">I respond within the hour, not days later.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container site-footer__legal">
+    <span>© {year} {BRAND.name} Real Estate. All rights reserved.</span>
+    <span>San Antonio, TX · Miami, FL — licensed real estate professional.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--obsidian);
+    color: rgba(255, 255, 255, 0.72);
+    padding-top: clamp(3.5rem, 7vw, 6rem);
+    padding-bottom: 2.5rem;
+  }
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2.5rem, 6vw, 6rem);
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .site-footer__tag {
+    font-family: var(--font-head);
+    font-size: var(--step-1);
+    color: #fff;
+    margin: 1.25rem 0 0.5rem;
+  }
+  .site-footer__markets {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+  }
+  .site-footer__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .site-footer__col { display: flex; flex-direction: column; gap: 0.7rem; }
+  .site-footer__col h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 0.4rem;
+  }
+  .site-footer__col a {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.95rem;
+    transition: color 0.25s var(--ease);
+  }
+  .site-footer__col a:hover { color: #fff; }
+  .site-footer__text { color: #fff !important; font-weight: 600; }
+  .site-footer__note {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0.4rem 0 0;
+  }
+  .site-footer__legal {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-top: 1.75rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  @media (max-width: 720px) {
+    .site-footer__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+</style>

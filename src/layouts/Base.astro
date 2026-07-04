@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyTextBar from '../components/StickyTextBar.astro';
+import { BRAND } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  headerTone?: 'dark' | 'light'; // dark = transparent header over a dark hero
+}
+const {
+  title = `${BRAND.name} — ${BRAND.tagline}`,
+  description = 'Straight-shooting real estate for serious buyers and sellers across San Antonio and Miami. No games, no stock-photo BS — just relentless negotiation and honest guidance.',
+  headerTone = 'light',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={`${BRAND.name} Real Estate`} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a href="#main" class="visually-hidden">Skip to content</a>
+    <Header tone={headerTone} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <StickyTextBar />
+
+    <script>
+      // Reveal-on-scroll for [data-reveal] elements.
+      const els = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window && els.length) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

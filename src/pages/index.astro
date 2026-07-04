@@ -1,0 +1,209 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import TikTokGrid from '../components/TikTokGrid.astro';
+import { smsHref, BRAND } from '../config';
+---
+<Base headerTone="dark">
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <!-- SWAP POINT: replace poster + <source> with Marco's compressed hero loop.
+         Put files in /public/video/hero.webm + hero.mp4, poster in /public/video/hero-poster.jpg -->
+    <div class="hero__media" aria-hidden="true">
+      <video
+        class="hero__video"
+        autoplay muted loop playsinline preload="none"
+        poster=""
+      >
+        <!-- <source src="/video/hero.webm" type="video/webm" /> -->
+        <!-- <source src="/video/hero.mp4" type="video/mp4" /> -->
+      </video>
+      <div class="hero__placeholder"></div>
+      <div class="hero__scrim"></div>
+    </div>
+
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">{BRAND.markets}</p>
+      <h1 class="hero__title">Straight Answers.<br /><span>Real Results.</span></h1>
+      <p class="hero__sub">
+        No games. No stock-photo BS. Just relentless negotiation and honest guidance —
+        from a starter home to a $1.2M listing, across San Antonio and Miami.
+      </p>
+      <div class="hero__cta">
+        <Button href={smsHref()} variant="primary" tone="light" dataSms={true}>Text Marco Now</Button>
+        <Button href="/contact" variant="outline" tone="light">Book a 15-min call</Button>
+      </div>
+    </div>
+
+    <a href="#truth" class="hero__scroll" aria-label="Scroll down">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- ================= TRUTH BAND ================= -->
+  <section class="truth section" id="truth">
+    <div class="container container--tight truth__inner" data-reveal>
+      <p class="eyebrow">The whole point</p>
+      <p class="truth__quote">
+        “I'll tell you the truth, even if it&nbsp;costs me the&nbsp;deal.”
+      </p>
+      <p class="truth__by">
+        If a house is overpriced or a neighborhood's wrong for you, you'll hear it from me —
+        not after you've signed. That's the difference between someone unlocking doors and
+        someone actually protecting your money.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= WHAT MARCO DOES ================= -->
+  <section class="does section">
+    <div class="container">
+      <div class="does__grid">
+        <article class="does-card" data-reveal>
+          <span class="does-card__num">01</span>
+          <h3>Buyers</h3>
+          <p>Honest feedback on every home, sharp offer strategy, and someone texting you back at odd hours until you're holding the keys.</p>
+          <a href="/buyers" class="does-card__link">The buyer experience →</a>
+        </article>
+        <article class="does-card" data-reveal style="--i:1">
+          <span class="does-card__num">02</span>
+          <h3>Sellers</h3>
+          <p>A real marketing plan powered by a massive social audience — built to put maximum eyes and premium dollars on your listing.</p>
+          <a href="/sellers" class="does-card__link">The seller strategy →</a>
+        </article>
+        <article class="does-card" data-reveal style="--i:2">
+          <span class="does-card__num">03</span>
+          <h3>Both markets</h3>
+          <p>A San Antonio engine for buyers and sellers, plus an active, boots-on-the-ground presence in Miami. Same standards, two coasts.</p>
+          <a href="/about" class="does-card__link">The track record →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TIKTOK PROOF ================= -->
+  <TikTokGrid />
+
+  <!-- ================= CLOSING CTA ================= -->
+  <section class="cta-band section">
+    <div class="container cta-band__inner" data-reveal>
+      <h2>Serious about your next move?</h2>
+      <p>Send a text. That's genuinely the fastest way to reach me — the same way most of my clients already do.</p>
+      <div class="cta-band__buttons">
+        <Button href={smsHref()} variant="primary" tone="light" dataSms={true}>Text Marco Now</Button>
+        <Button href="/contact" variant="outline" tone="light">Book a 15-min call</Button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    margin-top: -74px; /* under transparent header */
+    overflow: hidden;
+  }
+  .hero__media { position: absolute; inset: 0; z-index: 0; }
+  .hero__video { width: 100%; height: 100%; object-fit: cover; }
+  /* Branded placeholder shown until a real hero video is dropped in */
+  .hero__placeholder {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(100% 100% at 80% -10%, rgba(153,0,0,0.5) 0%, transparent 45%),
+      radial-gradient(90% 90% at 10% 110%, rgba(153,0,0,0.22) 0%, transparent 50%),
+      linear-gradient(180deg, #101012 0%, #050506 100%);
+  }
+  .hero__placeholder::after {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(90% 80% at 60% 30%, #000, transparent 85%);
+  }
+  .hero__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, transparent 80%),
+                linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 40%);
+  }
+  .hero__inner { position: relative; z-index: 1; padding-top: 74px; }
+  .hero__eyebrow {
+    font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase;
+    font-size: 0.78rem; color: rgba(255,255,255,0.7); margin: 0 0 1.25rem;
+  }
+  .hero__title {
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    line-height: 0.98;
+    margin: 0 0 1.5rem;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.4);
+  }
+  .hero__title span { color: #fff; position: relative; }
+  .hero__sub {
+    font-size: var(--step-1);
+    color: rgba(255,255,255,0.85);
+    max-width: 52ch;
+    margin: 0 0 2.25rem;
+  }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+
+  .hero__scroll {
+    position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
+    z-index: 1; width: 26px; height: 42px;
+    border: 2px solid rgba(255,255,255,0.4); border-radius: 20px;
+    display: grid; place-items: start center; padding-top: 7px;
+  }
+  .hero__scroll span {
+    width: 3px; height: 8px; border-radius: 2px; background: #fff;
+    animation: scrolldot 1.6s var(--ease) infinite;
+  }
+  @keyframes scrolldot { 0% { opacity: 0; transform: translateY(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
+  @media (max-width: 820px) { .hero__scroll { display: none; } }
+
+  /* ---- TRUTH BAND ---- */
+  .truth { background: var(--white); text-align: center; }
+  .truth__quote {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: var(--step-3);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0.5rem 0 1.5rem;
+    text-wrap: balance;
+  }
+  .truth__by { color: var(--muted); font-size: var(--step-1); max-width: 60ch; margin-inline: auto; }
+
+  /* ---- DOES ---- */
+  .does { background: var(--gray-light); }
+  .does__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2.5vw, 2rem); }
+  .does-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    transition-delay: calc(var(--i, 0) * 90ms);
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  .does-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px rgba(0,0,0,0.09); }
+  .does-card__num {
+    font-family: var(--font-head); font-weight: 700; font-size: 1rem;
+    color: var(--crimson); letter-spacing: 0.1em;
+  }
+  .does-card h3 { font-size: var(--step-2); margin: 0.5rem 0 0.6rem; }
+  .does-card p { color: var(--muted); margin-bottom: 1.25rem; }
+  .does-card__link { font-weight: 600; color: var(--crimson); }
+  .does-card__link:hover { text-decoration: underline; }
+
+  /* ---- CLOSING CTA ---- */
+  .cta-band { background: var(--obsidian); color: #fff; text-align: center; }
+  .cta-band__inner { max-width: 640px; margin-inline: auto; }
+  .cta-band h2 { font-size: var(--step-3); }
+  .cta-band p { color: rgba(255,255,255,0.72); font-size: var(--step-1); margin-bottom: 2rem; }
+  .cta-band__buttons { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+
+  @media (max-width: 860px) { .does__grid { grid-template-columns: 1fr; } }
+</style>

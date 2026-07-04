@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Button from '../components/Button.astro';
+import { smsHref, BRAND } from '../config';
+
+const multiplier = [
+  { t: 'A built-in audience', d: 'A large, engaged social following that already trusts my take — so your listing launches to real eyes on day one, not to crickets.' },
+  { t: 'Content that sells', d: 'Walkthroughs and market takes shot the way people actually want to watch them — the format that moves buyers off the couch and into showings.' },
+  { t: 'Premium positioning', d: 'Your home presented like the asset it is. The right framing gets the right buyers competing — which is how you land a premium price.' },
+];
+
+const valuation = [
+  'What you own and where — the details that actually move the number.',
+  'Your timeline and why you\'re selling, so the strategy fits your life.',
+  'A straight read on pricing — including if now isn\'t the right time.',
+  'A marketing plan built around real exposure, not a yard sign and hope.',
+];
+---
+<Base
+  title={`Sellers — ${BRAND.name}`}
+  description="A modern seller strategy that turns a massive social audience into maximum exposure and premium dollars. Strategic valuation, not a gimmicky instant estimate."
+  headerTone="dark"
+>
+  <PageHero
+    eyebrow="The Seller Strategy"
+    title="Your home is an asset. Let's market it like one."
+    blurb="More reach than a yard sign and an MLS listing will ever get you — turned into premium offers from serious buyers. Here's the play."
+  />
+
+  <!-- SOCIAL MULTIPLIER -->
+  <section class="section multiplier">
+    <div class="container">
+      <div class="multiplier__head" data-reveal>
+        <p class="eyebrow">The social multiplier</p>
+        <h2>Reach most agents simply don't have.</h2>
+        <p class="multiplier__lead">
+          The traditional listing playbook maxes out at whoever happens to search that week.
+          I put your home in front of a large, active audience that's already watching —
+          which is how you create competition, and competition is what gets you paid.
+        </p>
+      </div>
+      <div class="multiplier__grid">
+        {multiplier.map((m, i) => (
+          <article class="mult" data-reveal style={`--i:${i}`}>
+            <span class="mult__bar" aria-hidden="true"></span>
+            <h3>{m.t}</h3>
+            <p>{m.d}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUATION INTAKE -->
+  <section class="section valuation">
+    <div class="container valuation__grid">
+      <div class="valuation__copy" data-reveal>
+        <p class="eyebrow">Strategic valuation</p>
+        <h2>What's my home worth? Let's answer it properly.</h2>
+        <p>
+          Not an automated guess from an algorithm that's never seen your street.
+          A real, strategic read on your home's value and the smartest way to bring it to market —
+          built around your timeline and your goals.
+        </p>
+        <ul class="valuation__list">
+          {valuation.map((v) => (
+            <li>
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
+              <span>{v}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <aside class="valuation__card" data-reveal>
+        <h3>Request a strategic valuation</h3>
+        <p>The fastest way to start is a text. Tell me your address and timeline — I'll come back with a real plan, not a canned estimate.</p>
+        <Button href={smsHref("Hey Marco — I'm thinking about selling. My address is ")} variant="primary" dataSms={true} class="valuation__btn">Request a valuation blueprint</Button>
+        <a href="/contact" class="valuation__alt">Prefer to give more detail first? Use the intake form →</a>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .multiplier__head { max-width: 680px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+  .multiplier__lead { color: var(--muted); font-size: var(--step-1); margin: 0; }
+  .multiplier__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2.5vw, 1.75rem); }
+  .mult {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    transition-delay: calc(var(--i) * 90ms);
+  }
+  .mult__bar { display: block; width: 40px; height: 3px; background: var(--crimson); margin-bottom: 1.25rem; }
+  .mult h3 { font-size: var(--step-1); margin-bottom: 0.5rem; }
+  .mult p { color: var(--muted); margin: 0; }
+
+  .valuation { background: var(--obsidian); color: #fff; }
+  .valuation__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .valuation__copy h2 { font-size: var(--step-2); }
+  .valuation__copy > p { color: rgba(255,255,255,0.7); font-size: var(--step-1); }
+  .valuation__list { list-style: none; margin: 1.75rem 0 0; padding: 0; display: grid; gap: 0.9rem; }
+  .valuation__list li { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start; }
+  .valuation__list svg { color: var(--crimson); margin-top: 2px; }
+  .valuation__list span { color: rgba(255,255,255,0.85); }
+
+  .valuation__card {
+    background: #111113;
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.75rem, 3.5vw, 2.5rem);
+    border-top: 3px solid var(--crimson);
+  }
+  .valuation__card h3 { font-size: var(--step-1); }
+  .valuation__card p { color: rgba(255,255,255,0.65); }
+  .valuation__btn { width: 100%; margin-top: 0.5rem; }
+  .valuation__alt { display: inline-block; margin-top: 1.25rem; font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+  .valuation__alt:hover { color: #fff; }
+
+  @media (max-width: 820px) {
+    .multiplier__grid { grid-template-columns: 1fr; }
+    .valuation__grid { grid-template-columns: 1fr; }
+  }
+</style>

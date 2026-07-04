@@ -1,0 +1,54 @@
+---
+// Compact hero for interior pages. Dark, cinematic, room to breathe.
+interface Props {
+  eyebrow: string;
+  title: string;
+  blurb?: string;
+}
+const { eyebrow, title, blurb } = Astro.props;
+---
+<section class="phero">
+  <div class="phero__bg" aria-hidden="true"></div>
+  <div class="container phero__inner">
+    <p class="eyebrow phero__eyebrow">{eyebrow}</p>
+    <h1 class="phero__title">{title}</h1>
+    {blurb && <p class="phero__blurb">{blurb}</p>}
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    background: var(--obsidian);
+    color: #fff;
+    overflow: hidden;
+    /* pull up under the transparent/sticky header */
+    margin-top: -74px;
+    padding-top: calc(74px + clamp(3.5rem, 9vw, 7rem));
+    padding-bottom: clamp(3rem, 7vw, 5.5rem);
+  }
+  .phero__bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(90% 120% at 85% 0%, rgba(153,0,0,0.35) 0%, transparent 55%),
+      radial-gradient(70% 90% at 0% 100%, rgba(153,0,0,0.14) 0%, transparent 60%),
+      #08080a;
+  }
+  .phero__bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(80% 70% at 50% 20%, #000, transparent 80%);
+  }
+  .phero__inner { position: relative; max-width: 780px; }
+  .phero__eyebrow { color: #ff6b6b; }
+  .phero__title { font-size: var(--step-3); margin-bottom: 1rem; }
+  .phero__blurb {
+    font-size: var(--step-1);
+    color: rgba(255,255,255,0.72);
+    margin: 0;
+    max-width: 60ch;
+  }
+</style>

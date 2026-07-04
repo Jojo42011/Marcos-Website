@@ -1,0 +1,53 @@
+---
+// Persistent mobile-only "Text Marco" bar pinned to the bottom of the viewport.
+// This is the #1 CTA — it's always one tap away for TikTok traffic.
+import { smsHref, SMS_DISPLAY } from '../config';
+---
+<div class="textbar" aria-hidden="false">
+  <a class="textbar__link" href={smsHref()}>
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/>
+    </svg>
+    <span>Text Marco</span>
+    <span class="textbar__num">{SMS_DISPLAY}</span>
+  </a>
+</div>
+
+<style>
+  .textbar { display: none; }
+
+  /* Only on touch/handheld widths — desktop has header CTAs instead */
+  @media (max-width: 820px) {
+    .textbar {
+      display: block;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 100;
+      padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
+      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.72));
+      backdrop-filter: blur(6px);
+    }
+    .textbar__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--crimson);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 1.02rem;
+      border-radius: var(--radius);
+      letter-spacing: 0.01em;
+    }
+    .textbar__num {
+      font-weight: 500;
+      opacity: 0.85;
+      font-size: 0.9rem;
+    }
+    /* keep page content clear of the bar */
+    :global(body) { padding-bottom: 4.75rem; }
+  }
+</style>

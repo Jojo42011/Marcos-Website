@@ -1,0 +1,23 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro generated
+.astro/
+
+# env & secrets (CRM API keys live here — never commit)
+.env
+.env.production
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-error.log*
+
+# os / editor
+.DS_Store
+.vscode/
+*.log

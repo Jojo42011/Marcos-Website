@@ -1,0 +1,19 @@
+{
+  "name": "marco-puga-platform",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^8.3.4",
+    "@fontsource/montserrat": "^5.1.1",
+    "@fontsource/playfair-display": "^5.1.1",
+    "astro": "^4.16.18"
+  }
+}
