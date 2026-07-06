@@ -4,19 +4,18 @@ import IntakeForm from '../components/IntakeForm.astro';
 import { smsHref, SMS_DISPLAY, BRAND } from '../config';
 ---
 <Base
-  title={`Contact — ${BRAND.name}`}
-  description="Text Marco directly, or lock in a 15-minute strategy call. He responds within the hour, not days."
-  headerTone="light"
+  title={`Contact | ${BRAND.name} Real Estate`}
+  description="Text Marco directly, or book a quick call. He replies fast, usually within the hour."
 >
   <section class="contact section">
     <div class="container contact__grid">
       <!-- Left: the promise -->
       <div class="contact__left">
-        <p class="eyebrow">Let's talk</p>
-        <h1 class="contact__title">The fastest way in is a text.</h1>
+        <p class="eyebrow">Get in touch</p>
+        <h1 class="contact__title">A quick text is the easiest way</h1>
         <p class="contact__lead">
-          It's genuinely how I move quickest — the same way most of my clients already reach me.
-          Prefer to give more context first? Fill out the short form and I'll come in with a plan.
+          It is genuinely how I move fastest, and it is how most of my clients already reach me.
+          Prefer to share a little more first? Fill out the short form and I will come back with a plan.
         </p>
 
         <a href={smsHref()} class="contact__text-cta">
@@ -28,16 +27,16 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
         </a>
 
         <ul class="contact__promises">
-          <li><span>⚡</span> I respond within the hour, not days later.</li>
-          <li><span>🎯</span> A quick 15-minute call tells us both if it's a fit.</li>
-          <li><span>🤝</span> No pressure, no pitch — straight answers only.</li>
+          <li><span>⚡</span> I reply fast, usually within the hour.</li>
+          <li><span>🎯</span> A quick call tells us both if it is a good fit.</li>
+          <li><span>🤝</span> No pressure and no sales pitch, just straight answers.</li>
         </ul>
       </div>
 
       <!-- Right: the form -->
       <div class="contact__right">
         <div class="contact__form-head">
-          <h2>Lock in a 15-minute strategy session</h2>
+          <h2>Tell me a little about your move</h2>
           <p>Five quick questions so I show up to our call already knowing your situation.</p>
         </div>
         <IntakeForm />

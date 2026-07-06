@@ -37,13 +37,13 @@ src/
   config.ts              # single source of truth: phone #, nav, taglines
   layouts/Base.astro     # <head>, header, footer, sticky text bar, scroll reveals
   components/
-    Logo.astro           # MP monogram + wordmark lockup
-    Header.astro         # sticky nav (transparent-over-hero → solid on scroll)
+    Logo.astro           # Marco's real logo (dark + light-on-dark variants)
+    Header.astro         # solid white sticky nav
     Footer.astro
     Button.astro         # primary (crimson) / outline CTA
     StickyTextBar.astro  # mobile-only bottom "Text Marco" bar
-    TikTokGrid.astro     # lazy facade grid — poster → real embed on tap
-    IntakeForm.astro     # 5-step high-intent vetting form
+    Gallery.astro        # premium photo grid (placeholders → real photos)
+    IntakeForm.astro     # 5-step intake form
     PageHero.astro       # dark cinematic hero for interior pages
   pages/
     index.astro          # Home
@@ -85,10 +85,18 @@ premium today. Search the code for **`SWAP POINT`** to find each one:
 
 | Asset | Where | Notes |
 |-------|-------|-------|
-| Hero video loop | `src/pages/index.astro` | Add `public/video/hero.webm` + `hero.mp4` + `hero-poster.jpg`, uncomment `<source>` tags. Compress aggressively. |
-| TikTok videos | `src/components/TikTokGrid.astro` | Replace each `videoId` with a real TikTok ID; optional posters in `public/tiktok/`. |
+| Hero video/image | `src/pages/index.astro` | Add `public/video/hero.webm` + `hero.mp4` + `hero-poster.jpg`, uncomment `<source>` tags. Compress aggressively. |
+| Gallery photos | `src/components/Gallery.astro` | Set `src` on each item to a real `public/photos/*.jpg`. |
 | Closing photos | `src/pages/about.astro` | Swap the `.shot__ph` placeholders for candid `public/photos/*.jpg`. |
-| TikTok profile link | `TikTokGrid.astro` / `about` | Update `@marcopuga` to the real handle. |
+
+## Logo
+
+Marco's real logo lives in `public/brand/`. Three prepared files, all derived
+from the source art (`logo-original.png`):
+
+- `logo.png` — transparent background, original colors (for light surfaces)
+- `logo-light.png` — white text + red emblem (for the dark footer)
+- `apple-touch-icon.png` + `public/favicon.png` — the emblem, cropped for icons
 
 ## Brand tokens
 

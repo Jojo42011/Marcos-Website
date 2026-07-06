@@ -4,44 +4,43 @@ import PageHero from '../components/PageHero.astro';
 import Button from '../components/Button.astro';
 import { smsHref, BRAND } from '../config';
 
-const multiplier = [
-  { t: 'A built-in audience', d: 'A large, engaged social following that already trusts my take — so your listing launches to real eyes on day one, not to crickets.' },
-  { t: 'Content that sells', d: 'Walkthroughs and market takes shot the way people actually want to watch them — the format that moves buyers off the couch and into showings.' },
-  { t: 'Premium positioning', d: 'Your home presented like the asset it is. The right framing gets the right buyers competing — which is how you land a premium price.' },
+const marketing = [
+  { t: 'Presented properly', d: 'Professional photography and a clean, honest presentation that shows your home at its best and reaches serious buyers, not just whoever happens to be looking that week.' },
+  { t: 'Priced with a straight read', d: 'A clear, realistic price backed by real numbers. I will tell you what your home is truly worth, even when it is not the highest figure you hoped to hear.' },
+  { t: 'Negotiated with care', d: 'Calm, confident negotiation that protects your bottom line. My job is to get you the best possible price and terms, and to keep the process from falling apart.' },
 ];
 
 const valuation = [
-  'What you own and where — the details that actually move the number.',
-  'Your timeline and why you\'re selling, so the strategy fits your life.',
-  'A straight read on pricing — including if now isn\'t the right time.',
-  'A marketing plan built around real exposure, not a yard sign and hope.',
+  'What you own and where, and the details that actually move the number.',
+  'Your timeline and why you are selling, so the plan fits your life.',
+  'A straight read on pricing, including whether now is the right time.',
+  'A marketing plan built around real exposure, not a sign in the yard and hope.',
 ];
 ---
 <Base
-  title={`Sellers — ${BRAND.name}`}
-  description="A modern seller strategy that turns a massive social audience into maximum exposure and premium dollars. Strategic valuation, not a gimmicky instant estimate."
-  headerTone="dark"
+  title={`Sellers | ${BRAND.name} Real Estate`}
+  description="A thoughtful seller strategy built on honest pricing, professional marketing, and confident negotiation. A real valuation, not a gimmicky instant estimate."
 >
   <PageHero
-    eyebrow="The Seller Strategy"
-    title="Your home is an asset. Let's market it like one."
-    blurb="More reach than a yard sign and an MLS listing will ever get you — turned into premium offers from serious buyers. Here's the play."
+    eyebrow="For Sellers"
+    title="Your home deserves a real plan"
+    blurb="Honest pricing, professional marketing, and steady negotiation, all aimed at getting your home in front of the right buyers and earning you the best possible price."
   />
 
-  <!-- SOCIAL MULTIPLIER -->
+  <!-- MARKETING APPROACH -->
   <section class="section multiplier">
     <div class="container">
       <div class="multiplier__head" data-reveal>
-        <p class="eyebrow">The social multiplier</p>
-        <h2>Reach most agents simply don't have.</h2>
+        <p class="eyebrow">How I market your home</p>
+        <h2>Thoughtful marketing, not guesswork</h2>
         <p class="multiplier__lead">
-          The traditional listing playbook maxes out at whoever happens to search that week.
-          I put your home in front of a large, active audience that's already watching —
-          which is how you create competition, and competition is what gets you paid.
+          Selling well is not about a sign in the yard and waiting. It is about presenting your home
+          properly, pricing it honestly, and negotiating with care, so the right buyers show up and
+          compete for it. That is how you land a strong price.
         </p>
       </div>
       <div class="multiplier__grid">
-        {multiplier.map((m, i) => (
+        {marketing.map((m, i) => (
           <article class="mult" data-reveal style={`--i:${i}`}>
             <span class="mult__bar" aria-hidden="true"></span>
             <h3>{m.t}</h3>
@@ -56,11 +55,11 @@ const valuation = [
   <section class="section valuation">
     <div class="container valuation__grid">
       <div class="valuation__copy" data-reveal>
-        <p class="eyebrow">Strategic valuation</p>
-        <h2>What's my home worth? Let's answer it properly.</h2>
+        <p class="eyebrow">What is my home worth</p>
+        <h2>A real answer, not a guess from an algorithm</h2>
         <p>
-          Not an automated guess from an algorithm that's never seen your street.
-          A real, strategic read on your home's value and the smartest way to bring it to market —
+          Not an automated number from a website that has never seen your street. A real,
+          thoughtful read on your home’s value and the smartest way to bring it to market,
           built around your timeline and your goals.
         </p>
         <ul class="valuation__list">
@@ -73,10 +72,10 @@ const valuation = [
         </ul>
       </div>
       <aside class="valuation__card" data-reveal>
-        <h3>Request a strategic valuation</h3>
-        <p>The fastest way to start is a text. Tell me your address and timeline — I'll come back with a real plan, not a canned estimate.</p>
-        <Button href={smsHref("Hey Marco — I'm thinking about selling. My address is ")} variant="primary" dataSms={true} class="valuation__btn">Request a valuation blueprint</Button>
-        <a href="/contact" class="valuation__alt">Prefer to give more detail first? Use the intake form →</a>
+        <h3>Ask about your home’s value</h3>
+        <p>The easiest way to start is a text. Send me your address and your timeline, and I will come back with a real plan, not a canned estimate.</p>
+        <Button href={smsHref('Hi Marco, I am thinking about selling. My address is ')} variant="primary" dataSms={true} class="valuation__btn">Text Marco</Button>
+        <a href="/contact" class="valuation__alt">Prefer to share more detail first? Use the contact form</a>
       </aside>
     </div>
   </section>

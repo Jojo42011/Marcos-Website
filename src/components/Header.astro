@@ -3,15 +3,13 @@ import Logo from './Logo.astro';
 import Button from './Button.astro';
 import { NAV, smsHref } from '../config';
 
-// Transparent over dark heroes, solid on scroll. `tone` sets the initial
-// (pre-scroll) color scheme for the page it sits on.
-interface Props { tone?: 'dark' | 'light'; }
-const { tone = 'light' } = Astro.props;
+// Solid white sticky header. Clean and legible everywhere, so the real
+// brand logo always reads correctly. A soft shadow appears once you scroll.
 const currentPath = Astro.url.pathname;
 ---
-<header class={`site-header site-header--${tone}`} data-header>
+<header class="site-header" data-header>
   <div class="site-header__inner container">
-    <Logo variant="lockup" tone={tone === 'dark' ? 'light' : 'dark'} class="site-header__logo" />
+    <Logo class="site-header__logo" />
 
     <nav class="site-header__nav" aria-label="Primary">
       {NAV.map((item) => (
@@ -39,7 +37,7 @@ const currentPath = Astro.url.pathname;
       {NAV.map((item) => (
         <a href={item.href} class="mobile-nav__link">{item.label}</a>
       ))}
-      <a href="/contact" class="mobile-nav__link mobile-nav__link--accent">Book a 15-min call</a>
+      <a href="/contact" class="mobile-nav__link mobile-nav__link--accent">Book a call</a>
     </nav>
   </div>
 </header>
@@ -49,24 +47,26 @@ const currentPath = Astro.url.pathname;
     position: sticky;
     top: 0;
     z-index: 90;
-    transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-    background: transparent;
+    background: var(--white);
+    transition: box-shadow var(--dur) var(--ease);
   }
+  .site-header.is-scrolled { box-shadow: 0 1px 0 var(--line), 0 6px 24px rgba(0, 0, 0, 0.05); }
+
   .site-header__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    min-height: 74px;
+    min-height: 82px;
   }
 
   .site-header__nav { display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; }
   .site-header__link {
     font-weight: 500;
     font-size: 0.95rem;
+    color: var(--ink);
     position: relative;
     padding-block: 0.4rem;
-    transition: color 0.3s var(--ease);
   }
   .site-header__link::after {
     content: '';
@@ -80,31 +80,11 @@ const currentPath = Astro.url.pathname;
   .site-header__link:hover::after,
   .site-header__link[aria-current='page']::after { transform: scaleX(1); }
 
-  /* Tone: dark page (transparent header over dark hero) */
-  .site-header--dark .site-header__link { color: rgba(255, 255, 255, 0.82); }
-  .site-header--dark .site-header__link:hover { color: #fff; }
-
-  /* Tone: light page */
-  .site-header--light .site-header__link { color: var(--ink); }
-
-  /* Scrolled state — solid white, dark text, applied via JS */
-  .site-header.is-scrolled {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: saturate(180%) blur(10px);
-    box-shadow: 0 1px 0 var(--line);
-  }
-  /* Solid-white header → force the mark + wordmark dark. !important beats the
-     Logo component's own scoped .logo--light rules (higher specificity). */
-  .site-header.is-scrolled :global(.logo__name) { color: var(--ink) !important; }
-  .site-header.is-scrolled :global(.logo__role) { color: var(--crimson) !important; }
-  .site-header.is-scrolled .site-header__link { color: var(--ink); }
-  .site-header.is-scrolled :global(.logo__mark path:first-of-type) { stroke: var(--ink); }
-
   .site-header__toggle {
     display: none;
     background: none; border: 0; cursor: pointer;
     width: 44px; height: 44px; padding: 0;
-    position: relative;
+    position: relative; color: var(--ink);
   }
   .site-header__bars,
   .site-header__bars::before,
@@ -118,9 +98,6 @@ const currentPath = Astro.url.pathname;
   .site-header__bars { top: 21px; }
   .site-header__bars::before { top: -7px; }
   .site-header__bars::after { top: 7px; }
-  .site-header--dark .site-header__toggle { color: #fff; }
-  .site-header--light .site-header__toggle,
-  .site-header.is-scrolled .site-header__toggle { color: var(--ink); }
 
   .mobile-nav {
     display: none;
@@ -143,27 +120,19 @@ const currentPath = Astro.url.pathname;
     .site-header__nav,
     .site-header__cta { display: none; }
     .site-header__toggle { display: block; margin-left: auto; }
-    /* mobile header always solid for legibility */
-    .site-header { background: rgba(255, 255, 255, 0.96); box-shadow: 0 1px 0 var(--line); }
-    .site-header :global(.logo__name) { color: var(--ink) !important; }
-    .site-header :global(.logo__role) { color: var(--crimson) !important; }
-    .site-header :global(.logo__mark path:first-of-type) { stroke: var(--ink); }
-    .site-header__toggle { color: var(--ink); }
-    .site-header--dark .site-header__toggle { color: var(--ink); }
+    .site-header__inner { min-height: 70px; }
   }
 </style>
 
 <script>
-  // Solidify header after scrolling past the hero.
   const header = document.querySelector('[data-header]');
   const onScroll = () => {
     if (!header) return;
-    header.classList.toggle('is-scrolled', window.scrollY > 40);
+    header.classList.toggle('is-scrolled', window.scrollY > 20);
   };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Mobile drawer toggle.
   const toggle = document.querySelector('[data-nav-toggle]');
   const drawer = document.querySelector('[data-mobile-nav]');
   toggle?.addEventListener('click', () => {

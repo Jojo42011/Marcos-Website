@@ -8,12 +8,10 @@ import { BRAND } from '../config';
 interface Props {
   title?: string;
   description?: string;
-  headerTone?: 'dark' | 'light'; // dark = transparent header over a dark hero
 }
 const {
-  title = `${BRAND.name} — ${BRAND.tagline}`,
-  description = 'Straight-shooting real estate for serious buyers and sellers across San Antonio and Miami. No games, no stock-photo BS — just relentless negotiation and honest guidance.',
-  headerTone = 'light',
+  title = `${BRAND.name} Real Estate | ${BRAND.tagline}`,
+  description = 'Honest, direct real estate guidance for buyers and sellers across San Antonio and Miami. From your family’s first home to a luxury listing, you get straightforward advice and someone who looks out for you.',
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 ---
@@ -25,8 +23,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <meta name="theme-color" content="#990000" />
 
     <!-- Open Graph / social -->
     <meta property="og:type" content="website" />
@@ -38,7 +37,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   </head>
   <body>
     <a href="#main" class="visually-hidden">Skip to content</a>
-    <Header tone={headerTone} />
+    <Header />
     <main id="main">
       <slot />
     </main>

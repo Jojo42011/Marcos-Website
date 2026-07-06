@@ -22,9 +22,7 @@ const { eyebrow, title, blurb } = Astro.props;
     background: var(--obsidian);
     color: #fff;
     overflow: hidden;
-    /* pull up under the transparent/sticky header */
-    margin-top: -74px;
-    padding-top: calc(74px + clamp(3.5rem, 9vw, 7rem));
+    padding-top: clamp(3.5rem, 9vw, 7rem);
     padding-bottom: clamp(3rem, 7vw, 5.5rem);
   }
   .phero__bg {

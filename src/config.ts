@@ -6,9 +6,9 @@
 export const SMS_NUMBER = '18302689288'; // digits only, E.164 without '+'
 export const SMS_DISPLAY = '(830) 268-9288';
 
-// Prefilled text so a tap from a TikTok video opens the messaging app warm.
+// Prefilled text so a tap opens the messaging app ready to go.
 export const SMS_PREFILL =
-  "Hey Marco — saw your site. I'm looking to ";
+  "Hi Marco, I saw your website. I'm looking to ";
 
 export const smsHref = (body: string = SMS_PREFILL) =>
   `sms:+${SMS_NUMBER}?&body=${encodeURIComponent(body)}`;

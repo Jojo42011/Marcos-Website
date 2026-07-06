@@ -6,7 +6,7 @@ const year = 2026; // build-time constant; bump on rebuild
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <Logo variant="lockup" tone="light" />
+      <Logo onDark={true} />
       <p class="site-footer__tag">{BRAND.tagline}</p>
       <p class="site-footer__markets">{BRAND.markets}</p>
     </div>
@@ -19,15 +19,15 @@ const year = 2026; // build-time constant; bump on rebuild
       <div class="site-footer__col">
         <h4>Reach Marco</h4>
         <a href={smsHref()} class="site-footer__text">Text {SMS_DISPLAY}</a>
-        <a href="/contact">Book a 15-min call</a>
-        <p class="site-footer__note">I respond within the hour, not days later.</p>
+        <a href="/contact">Book a call</a>
+        <p class="site-footer__note">I reply fast, usually within the hour.</p>
       </div>
     </div>
   </div>
 
   <div class="container site-footer__legal">
     <span>© {year} {BRAND.name} Real Estate. All rights reserved.</span>
-    <span>San Antonio, TX · Miami, FL — licensed real estate professional.</span>
+    <span>San Antonio, TX and Miami, FL. Licensed real estate professional.</span>
   </div>
 </footer>
 

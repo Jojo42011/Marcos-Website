@@ -5,36 +5,35 @@ import Button from '../components/Button.astro';
 import { smsHref, BRAND } from '../config';
 
 const steps = [
-  { n: '01', t: 'The 15-minute triage call', d: "A quick, no-pressure call to understand your situation — budget, timeline, why you're moving. It tells us both in fifteen minutes whether this is a fit." },
-  { n: '02', t: 'Dial in what you actually want', d: 'We go deeper on the must-haves vs. the nice-to-haves, then I start sending real listings that fit — not a firehose of everything on the market.' },
-  { n: '03', t: 'Tour with honest feedback', d: "We walk homes together and I tell you the truth on every one. If it's overpriced or the neighborhood's wrong, you'll hear it — not hype." },
-  { n: '04', t: 'Offer strategy & negotiation', d: 'Once we find the one, I handle the offer and negotiation myself — structured to win without overpaying. This is where I earn my keep.' },
-  { n: '05', t: 'Inspections & repair requests', d: "I walk you through inspections and push for the repairs that matter, so surprises don't become your problem after closing." },
-  { n: '06', t: 'Closing protection', d: 'I stay on top of the lender and title company so nothing falls through the cracks — and I check in constantly right through the keys.' },
+  { n: '01', t: 'The first call', d: 'A quick, no pressure conversation to understand your situation. Your budget, your timeline, and why you are moving. In a few minutes we both know whether it is a good fit.' },
+  { n: '02', t: 'Get clear on what you want', d: 'We talk through your must haves and your nice to haves, then I start sending real homes that fit. No firehose of every listing on the market.' },
+  { n: '03', t: 'Tour homes with honest feedback', d: 'We walk homes together and I give you a straight read on every one. If a place is overpriced or the area is wrong for your family, you will hear it.' },
+  { n: '04', t: 'Offer strategy and negotiation', d: 'Once we find the right one, I handle the offer and the negotiation for you. This is where I earn my keep, structuring things to win without overpaying.' },
+  { n: '05', t: 'Inspections and repairs', d: 'I walk you through inspections and push for the repairs that matter, so surprises do not become your problem after you move in.' },
+  { n: '06', t: 'All the way to the keys', d: 'I stay on top of the lender and title company so nothing slips, and I keep you in the loop the whole way through closing.' },
 ];
 
 const markets = [
-  { city: 'San Antonio & suburbs', tag: 'Primary market', d: 'First-time buyers in the $250k–$450k range and move-up buyers into $700k–$1.2M single-family and new construction.' },
-  { city: 'Miami, FL', tag: 'Active & expanding', d: 'Premium condos and luxury single-family from $500k–$1.5M, with a trusted boots-on-the-ground partner for showings and paperwork.' },
+  { city: 'San Antonio and suburbs', tag: 'Home base', d: 'First time buyers in the $250k to $450k range, and growing families moving up into $700k to $1.2M single family homes and new construction.' },
+  { city: 'Miami, Florida', tag: 'Active and growing', d: 'Premium condos and luxury single family homes from $500k to $1.5M, with a trusted local partner on the ground for showings and paperwork.' },
 ];
 ---
 <Base
-  title={`Buyers — ${BRAND.name}`}
-  description="A protective, hyper-responsive buyer experience across San Antonio and Miami. Honest feedback on every home and sharp negotiation from first call to keys."
-  headerTone="dark"
+  title={`Buyers | ${BRAND.name} Real Estate`}
+  description="A patient, responsive buying experience across San Antonio and Miami. Honest feedback on every home and confident negotiation from the first call to the keys."
 >
   <PageHero
-    eyebrow="The Buyer Experience"
-    title="A partner in your corner — not a door-unlocker."
-    blurb="Fast texts, unfiltered truth on every home, and negotiation that protects your money. Here's exactly how it goes from first hello to keys in hand."
+    eyebrow="For Buyers"
+    title="Someone in your corner from day one"
+    blurb="Quick replies, honest feedback on every home, and negotiation that protects your money. Here is exactly how it goes from the first hello to the keys in your hand."
   />
 
   <!-- BLUEPRINT TIMELINE -->
   <section class="section blueprint">
     <div class="container">
       <div class="blueprint__head" data-reveal>
-        <p class="eyebrow">The step-by-step blueprint</p>
-        <h2>No mystery. No ghosting after the first meeting.</h2>
+        <p class="eyebrow">How buying works</p>
+        <h2>No mystery, and no disappearing after the first meeting</h2>
       </div>
       <ol class="timeline">
         {steps.map((s, i) => (
@@ -55,7 +54,7 @@ const markets = [
     <div class="container">
       <div class="markets__head" data-reveal>
         <p class="eyebrow">Where I work</p>
-        <h2>Two markets. One standard.</h2>
+        <h2>Two markets, one standard</h2>
       </div>
       <div class="markets__grid">
         {markets.map((m, i) => (
@@ -72,18 +71,18 @@ const markets = [
   <!-- CTA -->
   <section class="section buyers-cta">
     <div class="container container--tight buyers-cta__inner" data-reveal>
-      <h2>Tell me what you're looking for.</h2>
-      <p>Text me your criteria — price, area, timeline — and I'll come back with real options, fast.</p>
+      <h2>Tell me what you are looking for</h2>
+      <p>Send me a quick text with your price range, the areas you like, and your timeline. I will come back with real options.</p>
       <div class="buyers-cta__buttons">
-        <Button href={smsHref("Hey Marco — I'm buying. Here's what I'm looking for: ")} variant="primary" dataSms={true}>Text Marco your criteria</Button>
-        <Button href="/contact" variant="outline">Start with the 15-min call</Button>
+        <Button href={smsHref('Hi Marco, I am looking to buy. Here is what I have in mind: ')} variant="primary" dataSms={true}>Text Marco</Button>
+        <Button href="/contact" variant="outline">Book a call</Button>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .blueprint__head, .markets__head { max-width: 620px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+  .blueprint__head, .markets__head { max-width: 640px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
 
   .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   .tl {
@@ -103,7 +102,7 @@ const markets = [
     min-width: 2.4ch;
   }
   .tl__body h3 { font-size: var(--step-1); margin-bottom: 0.35rem; }
-  .tl__body p { color: var(--muted); margin: 0; max-width: 62ch; }
+  .tl__body p { color: var(--muted); margin: 0; max-width: 64ch; }
 
   .markets { background: var(--gray-light); }
   .markets__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2.5vw, 1.75rem); }
@@ -125,7 +124,7 @@ const markets = [
 
   .buyers-cta { text-align: center; }
   .buyers-cta h2 { font-size: var(--step-3); }
-  .buyers-cta p { color: var(--muted); font-size: var(--step-1); margin-bottom: 2rem; }
+  .buyers-cta p { color: var(--muted); font-size: var(--step-1); margin-bottom: 2rem; max-width: 54ch; margin-inline: auto; }
   .buyers-cta__buttons { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
 
   @media (max-width: 720px) {

@@ -1,7 +1,7 @@
 ---
-// Multi-step high-intent intake form — the "velvet rope".
-// Exactly the 5 filters Marco uses to size someone up in 30 seconds,
-// plus name + contact so he can follow up. Posts to /api/lead.
+// Multi-step intake form. Five quick questions so Marco arrives at the call
+// already knowing your situation, plus name and contact so he can follow up.
+// Posts to /api/lead.
 import { smsHref } from '../config';
 ---
 <form class="intake" data-intake novalidate>
@@ -10,55 +10,55 @@ import { smsHref } from '../config';
     <span class="intake__bar" data-progress style="--p:25%"></span>
   </div>
 
-  <!-- Step 1 — intent -->
+  <!-- Step 1: intent -->
   <fieldset class="intake__step" data-step="1">
-    <legend class="intake__q">First things first — what brings you in?</legend>
+    <legend class="intake__q">First things first, what brings you in?</legend>
     <div class="intake__choices">
-      <label class="choice"><input type="radio" name="intent" value="buy" required /><span>I'm buying</span></label>
-      <label class="choice"><input type="radio" name="intent" value="sell" /><span>I'm selling</span></label>
+      <label class="choice"><input type="radio" name="intent" value="buy" required /><span>I’m buying</span></label>
+      <label class="choice"><input type="radio" name="intent" value="sell" /><span>I’m selling</span></label>
       <label class="choice"><input type="radio" name="intent" value="both" /><span>Both</span></label>
     </div>
   </fieldset>
 
-  <!-- Step 2 — price -->
+  <!-- Step 2: price -->
   <fieldset class="intake__step" data-step="2" hidden>
-    <legend class="intake__q">What's your comfortable price range?</legend>
+    <legend class="intake__q">What price range feels comfortable?</legend>
     <div class="intake__choices intake__choices--stack">
       <label class="choice"><input type="radio" name="priceRange" value="Under $250k" required /><span>Under $250k</span></label>
-      <label class="choice"><input type="radio" name="priceRange" value="$250k–$500k" /><span>$250k – $500k</span></label>
-      <label class="choice"><input type="radio" name="priceRange" value="$500k–$1M" /><span>$500k – $1M</span></label>
-      <label class="choice"><input type="radio" name="priceRange" value="$1M+" /><span>$1M+</span></label>
+      <label class="choice"><input type="radio" name="priceRange" value="$250k to $500k" /><span>$250k to $500k</span></label>
+      <label class="choice"><input type="radio" name="priceRange" value="$500k to $1M" /><span>$500k to $1M</span></label>
+      <label class="choice"><input type="radio" name="priceRange" value="$1M and up" /><span>$1M and up</span></label>
     </div>
   </fieldset>
 
-  <!-- Step 3 — timeline -->
+  <!-- Step 3: timeline -->
   <fieldset class="intake__step" data-step="3" hidden>
     <legend class="intake__q">How soon are you looking to move?</legend>
     <div class="intake__choices intake__choices--stack">
       <label class="choice"><input type="radio" name="timeline" value="Within 60 days" required /><span>Within 60 days</span></label>
-      <label class="choice"><input type="radio" name="timeline" value="2–6 months" /><span>2 – 6 months</span></label>
-      <label class="choice"><input type="radio" name="timeline" value="Just browsing" /><span>Just browsing for now</span></label>
+      <label class="choice"><input type="radio" name="timeline" value="2 to 6 months" /><span>2 to 6 months</span></label>
+      <label class="choice"><input type="radio" name="timeline" value="Just exploring" /><span>Just exploring for now</span></label>
     </div>
   </fieldset>
 
-  <!-- Step 4 — pre-approval -->
+  <!-- Step 4: lender -->
   <fieldset class="intake__step" data-step="4" hidden>
-    <legend class="intake__q">If you're buying — are you pre-approved or pre-qualified?</legend>
+    <legend class="intake__q">If you are buying, have you talked to a lender yet?</legend>
     <div class="intake__choices intake__choices--stack">
-      <label class="choice"><input type="radio" name="preApproved" value="Yes" required /><span>Yes, I'm pre-approved / pre-qualified</span></label>
+      <label class="choice"><input type="radio" name="preApproved" value="Yes" required /><span>Yes, I am already approved with a lender</span></label>
       <label class="choice"><input type="radio" name="preApproved" value="Not yet" /><span>Not yet</span></label>
-      <label class="choice"><input type="radio" name="preApproved" value="Selling only" /><span>N/A — I'm selling</span></label>
+      <label class="choice"><input type="radio" name="preApproved" value="Selling only" /><span>Does not apply, I am selling</span></label>
     </div>
   </fieldset>
 
-  <!-- Step 5 — reason + contact -->
+  <!-- Step 5: reason + contact -->
   <fieldset class="intake__step" data-step="5" hidden>
-    <legend class="intake__q">Last thing — why are you making this move?</legend>
-    <textarea name="reason" rows="3" required placeholder="A sentence or two. Job change, growing family, first place, investment — whatever it is."></textarea>
+    <legend class="intake__q">Last one, why are you making this move?</legend>
+    <textarea name="reason" rows="3" required placeholder="A sentence or two. A job change, a growing family, a first home, an investment. Whatever it is."></textarea>
     <div class="intake__row">
       <label class="field">
         <span>Your name</span>
-        <input type="text" name="name" autocomplete="name" placeholder="First & last" />
+        <input type="text" name="name" autocomplete="name" placeholder="First and last" />
       </label>
       <label class="field">
         <span>Best number or email</span>
@@ -75,7 +75,7 @@ import { smsHref } from '../config';
   <div class="intake__nav">
     <button type="button" class="intake__back" data-back hidden>Back</button>
     <button type="button" class="intake__next" data-next>Continue</button>
-    <button type="submit" class="intake__submit" data-submit hidden>Send it to Marco</button>
+    <button type="submit" class="intake__submit" data-submit hidden>Send to Marco</button>
   </div>
 
   <p class="intake__step-label" data-step-label>Step 1 of 5</p>
@@ -85,9 +85,9 @@ import { smsHref } from '../config';
     <div class="intake__done-mark" aria-hidden="true">
       <svg viewBox="0 0 24 24" width="30" height="30"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
     </div>
-    <h3>Got it. You're on Marco's radar.</h3>
-    <p>He personally reviews every one of these and responds fast — usually within the hour, not days. Want to skip the wait?</p>
-    <a class="intake__done-text" href={smsHref("Hey Marco — just filled out your form. ")}>Text him now →</a>
+    <h3>Got it. Thanks for reaching out.</h3>
+    <p>Marco reads every one of these himself and replies fast, usually within the hour. Want to skip the wait?</p>
+    <a class="intake__done-text" href={smsHref('Hi Marco, I just filled out your form. ')}>Text him now</a>
   </div>
 
   <p class="intake__error" data-error hidden role="alert"></p>

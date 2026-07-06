@@ -5,28 +5,27 @@ import Button from '../components/Button.astro';
 import { smsHref, BRAND } from '../config';
 
 const values = [
-  { t: 'I tell you the truth', d: "Even when it costs me the deal. Overpriced house, wrong neighborhood, bad timing — you'll hear it straight." },
-  { t: "I don't disappear", d: 'Fast texts and calls back, even at odd hours. Most of my business comes from people I\'ve already closed for — that only happens if you stay.' },
-  { t: 'You already know me', d: "A lot of clients feel like they know me before we ever talk, from the content. That trust is the whole head start." },
+  { t: 'I tell you the truth', d: 'Even when it is not what you want to hear. Overpriced home, wrong neighborhood, wrong timing. You will always get a straight answer from me.' },
+  { t: 'I stay in it with you', d: 'Fast replies and real follow through, not a disappearing act after the first meeting. Most of my business comes from past clients and their referrals, and that only happens if I show up.' },
+  { t: 'I keep it calm', d: 'Buying or selling a home is stressful enough. My job is to make it feel steady and clear, so you can make good decisions without the pressure.' },
 ];
 
-// SWAP POINT: candid closing/showing photos → /public/photos/*.jpg
+// SWAP POINT: candid closing and showing photos -> /public/photos/*.jpg
 const shots = [
-  'Closing day handoff',
-  'Walkthrough, luxury listing',
-  'On-site with clients',
+  'Closing day',
+  'A luxury walkthrough',
+  'On site with clients',
   'Keys to a first home',
 ];
 ---
 <Base
-  title={`About — ${BRAND.name}`}
-  description="From first-time buyers to million-dollar closings — Marco Puga's story, and why clients say he's on their side, not just trying to close them."
-  headerTone="dark"
+  title={`About | ${BRAND.name} Real Estate`}
+  description="From first time buyers to million dollar closings. Marco Puga’s story, and why clients say he is genuinely on their side."
 >
   <PageHero
-    eyebrow="The Track Record"
-    title="Legit, active, and genuinely on your side."
-    blurb="Closing million-dollar deals without ever losing the thing that got me here — actually looking out for the people I work with."
+    eyebrow="About Marco"
+    title="Honest, steady, and genuinely on your side"
+    blurb="Closing bigger deals every year without ever losing the thing that got me here, actually looking out for the families I work with."
   />
 
   <!-- STORY -->
@@ -35,25 +34,27 @@ const shots = [
       <div class="story__copy" data-reveal>
         <p class="eyebrow">The short version</p>
         <p class="story__lead">
-          I started by helping everyday families in San Antonio find their first homes — and I still love that work.
-          As the referrals grew, so did the deals: $700k, then $1M, now $1.2M+.
+          I started out helping everyday families in San Antonio find their first homes, and I
+          still love that work. As the referrals grew, so did the deals, all the way up to luxury
+          listings above a million dollars.
         </p>
         <p>
-          But I never wanted to become the stuffy, unapproachable luxury-only agent. The luxury side is proof of
-          how far I've come — not the whole identity. Whether it's a $300k starter home or a million-dollar listing,
-          you get the same thing: someone who tells you the truth, moves fast, and treats your money like it's mine.
+          I never wanted to become the stiff, unapproachable luxury agent. The higher end work is
+          proof of how far I have come, not the whole story. Whether it is a first home or a
+          million dollar listing, you get the same thing from me. Someone who tells you the truth,
+          moves quickly, and treats your money like it is my own.
         </p>
         <p>
-          These days that means two markets — a busy San Antonio base and an active, growing presence in Miami,
-          where I work alongside a trusted local partner so my clients get real infrastructure on the ground
-          plus my strategy and negotiation.
+          These days that means two markets. A busy base in San Antonio and an active, growing
+          presence in Miami, where I work alongside a trusted local partner so my clients get real
+          support on the ground plus my strategy and negotiation.
         </p>
       </div>
 
       <div class="story__gallery" data-reveal>
         {shots.map((label, i) => (
           <figure class="shot" style={`--i:${i}`}>
-            <div class="shot__ph" aria-hidden="true"><span>MP</span></div>
+            <div class="shot__ph" aria-hidden="true"><span>Marco Puga</span></div>
             <figcaption>{label}</figcaption>
           </figure>
         ))}
@@ -65,8 +66,8 @@ const shots = [
   <section class="section values">
     <div class="container">
       <div class="values__head" data-reveal>
-        <p class="eyebrow">What clients actually say</p>
-        <h2>The stuff other agents can't fake.</h2>
+        <p class="eyebrow">What you can count on</p>
+        <h2>The things that actually matter</h2>
       </div>
       <div class="values__grid">
         {values.map((v, i) => (
@@ -83,9 +84,9 @@ const shots = [
   <!-- CTA -->
   <section class="section about-cta">
     <div class="container container--tight about-cta__inner" data-reveal>
-      <h2>Let's talk.</h2>
-      <p>The fastest way to reach me is a text — same as everyone else. No phone tree, no assistant. Just me.</p>
-      <Button href={smsHref("Hey Marco — ")} variant="primary" dataSms={true}>Connect direct via text</Button>
+      <h2>Let’s talk</h2>
+      <p>The easiest way to reach me is a text. No phone tree, no assistant, just me.</p>
+      <Button href={smsHref('Hi Marco, ')} variant="primary" dataSms={true}>Text Marco</Button>
     </div>
   </section>
 </Base>
@@ -104,11 +105,10 @@ const shots = [
     background: radial-gradient(120% 100% at 30% 0%, #1a1a1d, #050506);
     position: relative; overflow: hidden;
   }
-  .shot:nth-child(even) .shot__ph { aspect-ratio: 4 / 5; transform: translateY(1.5rem); }
+  .shot:nth-child(even) .shot__ph { transform: translateY(1.5rem); }
   .shot__ph span {
-    font-family: var(--font-head); font-weight: 700; font-size: 1.5rem;
-    color: rgba(255,255,255,0.25);
-    border: 1.5px solid rgba(255,255,255,0.18); border-radius: 5px; padding: 0.3em 0.5em;
+    font-family: var(--font-head); font-weight: 600; font-size: 1rem;
+    color: rgba(255,255,255,0.26);
   }
   .shot figcaption { margin-top: 0.6rem; font-size: 0.82rem; color: var(--muted); }
   .shot:nth-child(even) figcaption { transform: translateY(1.5rem); }

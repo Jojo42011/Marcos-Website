@@ -1,72 +1,28 @@
 ---
-// Architectural MP monogram + wordmark lockup.
-// - The "M" is a single mitred stroke (structural, column-like).
-// - The "P" bowl comes off the M's right leg in crimson — the brand's one
-//   deliberate spot of color. No gradient, no house-shape.
-//
-// Props:
-//   variant: 'lockup' (mark + name) | 'mark' (emblem only)
-//   tone:    'dark' (for light backgrounds) | 'light' (for dark backgrounds)
+// Marco Puga's real brand logo (the house/diamond emblem + wordmark).
+// Two prepared variants of the same logo:
+//   - /brand/logo.png       original colors (red emblem, dark text) for LIGHT backgrounds
+//   - /brand/logo-light.png white text + red emblem, for DARK backgrounds
+// Set `onDark` when the logo sits on a dark surface (footer).
 interface Props {
-  variant?: 'lockup' | 'mark';
-  tone?: 'dark' | 'light';
+  onDark?: boolean;
   class?: string;
 }
-const { variant = 'lockup', tone = 'dark', class: className = '' } = Astro.props;
-const stroke = tone === 'light' ? '#ffffff' : '#0b0b0c';
+const { onDark = false, class: className = '' } = Astro.props;
+const src = onDark ? '/brand/logo-light.png' : '/brand/logo.png';
 ---
-
-<a href="/" class={`logo logo--${tone} ${className}`} aria-label="Marco Puga Real Estate — home">
-  <svg class="logo__mark" viewBox="0 0 82 64" width="41" height="32" aria-hidden="true" focusable="false">
-    <!-- M -->
-    <path
-      d="M10 55 L10 9 L31 38 L52 9 L52 55"
-      fill="none" stroke={stroke} stroke-width="10"
-      stroke-linecap="square" stroke-linejoin="miter"
-    />
-    <!-- P bowl (crimson) -->
-    <path
-      d="M52 9 h9 a14 14 0 0 1 0 27 h-9"
-      fill="none" stroke="#990000" stroke-width="10"
-      stroke-linecap="square" stroke-linejoin="miter"
-    />
-  </svg>
-
-  {variant === 'lockup' && (
-    <span class="logo__word">
-      <span class="logo__name">Marco Puga</span>
-      <span class="logo__role">Real Estate</span>
-    </span>
-  )}
+<a href="/" class={`logo ${className}`} aria-label="Marco Puga Real Estate, home">
+  <img src={src} alt="Marco Puga Real Estate" class="logo__img" width="399" height="366" />
 </a>
 
 <style>
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7rem;
-    line-height: 1;
+  .logo { display: inline-flex; align-items: center; line-height: 0; }
+  .logo__img {
+    height: 58px;
+    width: auto;
+    display: block;
   }
-  .logo__mark { flex: none; display: block; }
-  .logo__word { display: flex; flex-direction: column; gap: 0.15rem; }
-  .logo__name {
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 1.18rem;
-    letter-spacing: 0.01em;
-  }
-  .logo__role {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.6rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--crimson);
-  }
-  .logo--light .logo__name { color: var(--white); }
-  .logo--light .logo__role { color: rgba(255, 255, 255, 0.7); }
-
-  @media (max-width: 400px) {
-    .logo__name { font-size: 1.02rem; }
+  @media (max-width: 820px) {
+    .logo__img { height: 50px; }
   }
 </style>
