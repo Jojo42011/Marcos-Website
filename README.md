@@ -85,7 +85,7 @@ premium today. Search the code for **`SWAP POINT`** to find each one:
 
 | Asset | Where | Notes |
 |-------|-------|-------|
-| Hero video/image | `src/pages/index.astro` | Add `public/video/hero.webm` + `hero.mp4` + `hero-poster.jpg`, uncomment `<source>` tags. Compress aggressively. |
+| Hero video | `public/video/hero.mp4` | Live: a compressed (4.4 MB, 720p) muted loop with `hero-poster.jpg` for first paint. Replace both files to swap the clip. |
 | Gallery photos | `src/components/Gallery.astro` | Set `src` on each item to a real `public/photos/*.jpg`. |
 | Closing photos | `src/pages/about.astro` | Swap the `.shot__ph` placeholders for candid `public/photos/*.jpg`. |
 

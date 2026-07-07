@@ -7,18 +7,14 @@ import { smsHref, BRAND } from '../config';
 <Base>
   <!-- ================= HERO ================= -->
   <section class="hero">
-    <!-- SWAP POINT: replace poster + <source> with Marco's compressed hero image or loop.
-         Put files in /public/video/hero.webm + hero.mp4, poster in /public/video/hero-poster.jpg -->
     <div class="hero__media" aria-hidden="true">
       <video
         class="hero__video"
-        autoplay muted loop playsinline preload="none"
-        poster=""
+        autoplay muted loop playsinline preload="auto"
+        poster="/video/hero-poster.jpg"
       >
-        <!-- <source src="/video/hero.webm" type="video/webm" /> -->
-        <!-- <source src="/video/hero.mp4" type="video/mp4" /> -->
+        <source src="/video/hero.mp4" type="video/mp4" />
       </video>
-      <div class="hero__placeholder"></div>
       <div class="hero__scrim"></div>
     </div>
 
@@ -102,33 +98,24 @@ import { smsHref, BRAND } from '../config';
   /* ---- HERO ---- */
   .hero {
     position: relative;
-    min-height: calc(100svh - 82px);
+    min-height: calc(100svh - var(--header-h));
     display: flex;
     align-items: center;
     color: #fff;
     overflow: hidden;
+    background: #050506; /* fallback behind the video */
   }
   .hero__media { position: absolute; inset: 0; z-index: 0; }
-  .hero__video { width: 100%; height: 100%; object-fit: cover; }
-  .hero__placeholder {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(100% 100% at 80% -10%, rgba(153,0,0,0.5) 0%, transparent 45%),
-      radial-gradient(90% 90% at 10% 110%, rgba(153,0,0,0.22) 0%, transparent 50%),
-      linear-gradient(180deg, #101012 0%, #050506 100%);
-  }
-  .hero__placeholder::after {
-    content: ''; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-    background-size: 52px 52px;
-    mask-image: radial-gradient(90% 80% at 60% 30%, #000, transparent 85%);
+  .hero__video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    background: #050506;
   }
   .hero__scrim {
     position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, transparent 80%),
-                linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 40%);
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.45) 42%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0.25) 100%),
+      linear-gradient(0deg, rgba(0,0,0,0.65) 0%, transparent 45%);
   }
   .hero__inner { position: relative; z-index: 1; padding-block: clamp(3rem, 8vw, 5rem); }
   .hero__eyebrow {
