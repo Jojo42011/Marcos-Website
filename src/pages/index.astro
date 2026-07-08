@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
-import Gallery from '../components/Gallery.astro';
+import FeaturedListings from '../components/FeaturedListings.astro';
 import { smsHref, BRAND } from '../config';
 ---
 <Base>
@@ -20,11 +20,11 @@ import { smsHref, BRAND } from '../config';
 
     <div class="container hero__inner">
       <p class="hero__eyebrow">{BRAND.markets}</p>
-      <h1 class="hero__title">Straight Answers.<br /><span>Real Results.</span></h1>
+      <h1 class="hero__title">Trusted representation<br /><span>for the moves that matter.</span></h1>
       <p class="hero__sub">
-        Honest, down to earth guidance for buyers and sellers across San Antonio and Miami.
-        From your family’s first home to a luxury listing, you get real advice, steady
-        negotiation, and someone who genuinely looks out for you.
+        Clear, experienced guidance for buyers and sellers across Texas and Miami. From a
+        family’s first home to a seven-figure listing, you get sharp market insight, careful
+        negotiation, and an advocate who protects your interests at every step.
       </p>
       <div class="hero__cta">
         <Button href={smsHref()} variant="primary" tone="light" dataSms={true}>Text Marco</Button>
@@ -42,12 +42,12 @@ import { smsHref, BRAND } from '../config';
     <div class="container container--tight truth__inner" data-reveal>
       <p class="eyebrow">Why clients trust me</p>
       <p class="truth__quote">
-        “I’ll tell you the truth, even if it costs me the&nbsp;deal.”
+        “You will always get my honest read, even when it isn’t what you hoped to&nbsp;hear.”
       </p>
       <p class="truth__by">
-        If a home is overpriced, or a neighborhood is not right for your family, you will hear it
-        from me before you ever sign. That is the difference between someone who just opens doors
-        and someone who actually protects your money.
+        If a home is overpriced, or an area isn’t the right fit, you’ll know before you ever sign.
+        That candor is what separates an agent who simply opens doors from one who genuinely
+        protects your investment.
       </p>
     </div>
   </section>
@@ -71,15 +71,15 @@ import { smsHref, BRAND } from '../config';
         <article class="does-card" data-reveal style="--i:2">
           <span class="does-card__num">03</span>
           <h3>Two markets</h3>
-          <p>A busy home base in San Antonio and an active, growing presence in Miami. Same standards, same care, in both cities.</p>
+          <p>Rooted in San Antonio and active across Texas, with a growing presence in Miami. The same standard of service in every market I serve.</p>
           <a href="/about" class="does-card__link">Get to know Marco</a>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ================= GALLERY ================= -->
-  <Gallery />
+  <!-- ================= FEATURED LISTINGS ================= -->
+  <FeaturedListings />
 
   <!-- ================= CLOSING CTA ================= -->
   <section class="cta-band section">
@@ -123,8 +123,9 @@ import { smsHref, BRAND } from '../config';
     font-size: 0.78rem; color: rgba(255,255,255,0.7); margin: 0 0 1.25rem;
   }
   .hero__title {
-    font-size: clamp(2.8rem, 8vw, 6rem);
-    line-height: 0.98;
+    font-size: clamp(2.6rem, 7vw, 5.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
     margin: 0 0 1.5rem;
     text-shadow: 0 2px 40px rgba(0,0,0,0.4);
   }
@@ -132,7 +133,7 @@ import { smsHref, BRAND } from '../config';
   .hero__sub {
     font-size: var(--step-1);
     color: rgba(255,255,255,0.85);
-    max-width: 54ch;
+    max-width: 56ch;
     margin: 0 0 2.25rem;
   }
   .hero__cta { display: flex; flex-wrap: wrap; gap: 0.9rem; }

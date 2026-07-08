@@ -1,0 +1,226 @@
+---
+// Featured Listings — a hand-maintained carousel of current homes.
+// Swipe/scroll on touch, arrow buttons on desktop. Each card carries a photo,
+// a price/address/specs overlay, and a "View" button that deep-links to the
+// full listing (Marco's live Brivity page, Zillow, wherever it lives).
+//
+// Why hand-maintained and not an MLS/IDX embed: showing other brokers' live
+// listings requires an IDX license from the MLS — a legal permission, not a
+// technical one. A curated set like this needs no approval, reads the most
+// premium, and can be swapped for a live IDX/RESO feed later with no layout
+// change.
+//
+// SWAP POINT: add a photo to /public/photos/ and set `src` on each listing,
+// and point `href` at that home's live detail page.
+export interface Listing {
+  price: string;
+  address: string;
+  specs: string;
+  href: string;
+  src?: string;
+}
+interface Props {
+  listings?: Listing[];
+  heading?: string;
+  eyebrow?: string;
+  blurb?: string;
+}
+const {
+  listings = [
+    { price: '$459,900', address: '448 Turning Stone, Cibolo, TX 78108', specs: '4 bd · 3 ba · 2,244 sqft', href: '#' },
+    { price: '$349,995', address: '10426 Sun Ml, San Antonio, TX 78254', specs: '5 bd · 2.5 ba · 2,513 sqft', href: '#' },
+    { price: '$195,000', address: '305 Toepperwein Rd, Converse, TX 78109', specs: '3 bd · 2 ba · 1,970 sqft', href: '#' },
+    { price: '$1,000,000', address: 'Luxury single family, Texas', specs: '4 bd · 3.5 ba · 3,600 sqft', href: '#' },
+    { price: '$1,250,000', address: 'Waterfront condo, Miami, FL', specs: '3 bd · 3 ba · 2,100 sqft', href: '#' },
+    { price: '$675,000', address: 'New construction, Hill Country', specs: '4 bd · 3 ba · 2,850 sqft', href: '#' },
+  ],
+  heading = 'Homes on the market now',
+  eyebrow = 'Featured listings',
+  blurb = 'A hand-picked look at current listings across Texas and Miami. Swipe through, then tap any home for the full details.',
+} = Astro.props;
+---
+<section class="listings section" aria-labelledby="listings-h" data-listings>
+  <div class="container">
+    <div class="listings__head" data-reveal>
+      <div class="listings__intro">
+        <p class="eyebrow">{eyebrow}</p>
+        <h2 id="listings-h">{heading}</h2>
+        <p class="listings__blurb">{blurb}</p>
+      </div>
+      <div class="listings__nav">
+        <button type="button" class="listings__arrow" data-listings-prev aria-label="Previous listings">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button type="button" class="listings__arrow" data-listings-next aria-label="Next listings">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="listings__track" data-listings-track>
+    {listings.map((l, i) => (
+      <article class="lcard" data-reveal style={`--i:${i}`}>
+        {l.src ? (
+          <img class="lcard__img" src={l.src} alt={l.address} loading="lazy" />
+        ) : (
+          <div class="lcard__ph" aria-hidden="true"><span>Marco Puga</span></div>
+        )}
+        <div class="lcard__scrim" aria-hidden="true"></div>
+        <div class="lcard__meta">
+          <p class="lcard__price">{l.price}</p>
+          <p class="lcard__addr">{l.address}</p>
+          <p class="lcard__specs">{l.specs}</p>
+        </div>
+        <a class="lcard__view" href={l.href} target="_blank" rel="noopener">View</a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .listings { background: var(--gray-light); overflow: hidden; }
+
+  .listings__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+    flex-wrap: wrap;
+  }
+  .listings__intro { max-width: 640px; }
+  .listings__blurb { color: var(--muted); font-size: var(--step-1); margin: 0; }
+
+  .listings__nav { display: flex; gap: 0.65rem; }
+  .listings__arrow {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 0, 0, 0.18);
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .listings__arrow:hover { border-color: var(--crimson); color: var(--crimson); }
+
+  /* Scroll track sits at container width so cards flow past the right edge. */
+  .listings__track {
+    display: flex;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-bottom: 0.5rem;
+  }
+  .listings__track::-webkit-scrollbar { display: none; }
+
+  .lcard {
+    flex: 0 0 clamp(280px, 80vw, 380px);
+    scroll-snap-align: start;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0b0b0c;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+    transition-delay: calc(var(--i) * 60ms);
+  }
+  .lcard__img,
+  .lcard__ph {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .lcard__ph {
+    display: grid; place-items: center;
+    background: radial-gradient(120% 100% at 30% 0%, #1a1a1d 0%, #050506 70%);
+  }
+  .lcard__ph::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(80% 80% at 50% 40%, #000, transparent);
+  }
+  .lcard__ph span {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.28);
+  }
+  .lcard__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 32%, transparent 62%);
+    pointer-events: none;
+  }
+  .lcard__meta {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 1.25rem 1.4rem;
+    color: #fff;
+    pointer-events: none;
+  }
+  .lcard__price {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    line-height: 1;
+    margin: 0 0 0.55rem;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+  }
+  .lcard__addr {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  }
+  .lcard__specs {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  }
+  .lcard__view {
+    position: absolute;
+    right: 1.1rem; bottom: 1.2rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    padding: 0.7rem 1.35rem;
+    border-radius: var(--radius);
+    background: var(--crimson);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transition: background 0.25s var(--ease);
+  }
+  .lcard__view:hover { background: var(--crimson-hover); }
+</style>
+
+<script>
+  // Arrow nav: scroll the track by one card + gap. Touch/trackpad users just
+  // swipe the overflow-scroll track directly.
+  document.querySelectorAll<HTMLElement>('[data-listings]').forEach((section) => {
+    const track = section.querySelector<HTMLElement>('[data-listings-track]');
+    if (!track) return;
+    const scrollByCard = (dir: number) => {
+      const card = track.querySelector<HTMLElement>('.lcard');
+      const styles = getComputedStyle(track);
+      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 20;
+      const step = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.85;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    };
+    section.querySelector('[data-listings-prev]')?.addEventListener('click', () => scrollByCard(-1));
+    section.querySelector('[data-listings-next]')?.addEventListener('click', () => scrollByCard(1));
+  });
+</script>

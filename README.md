@@ -42,7 +42,7 @@ src/
     Footer.astro
     Button.astro         # primary (crimson) / outline CTA
     StickyTextBar.astro  # mobile-only bottom "Text Marco" bar
-    Gallery.astro        # premium photo grid (placeholders → real photos)
+    FeaturedListings.astro # swipeable carousel of current listings (curated, not IDX)
     IntakeForm.astro     # 5-step intake form
     PageHero.astro       # dark cinematic hero for interior pages
   pages/
@@ -86,7 +86,7 @@ premium today. Search the code for **`SWAP POINT`** to find each one:
 | Asset | Where | Notes |
 |-------|-------|-------|
 | Hero video | `public/video/hero.mp4` | Live: a compressed (4.4 MB, 720p) muted loop with `hero-poster.jpg` for first paint. Replace both files to swap the clip. |
-| Gallery photos | `src/components/Gallery.astro` | Set `src` on each item to a real `public/photos/*.jpg`. |
+| Featured listings | `src/components/FeaturedListings.astro` | Set `src` on each listing to a real `public/photos/*.jpg`, and point `href` at the live listing page. Curated by hand — no MLS/IDX approval needed; swap for a live IDX/RESO feed later with no layout change. |
 | Closing photos | `src/pages/about.astro` | Swap the `.shot__ph` placeholders for candid `public/photos/*.jpg`. |
 
 ## Logo

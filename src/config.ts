@@ -16,8 +16,8 @@ export const smsHref = (body: string = SMS_PREFILL) =>
 export const BRAND = {
   name: 'Marco Puga',
   role: 'Real Estate',
-  tagline: 'Straight Answers. Real Results.',
-  markets: 'San Antonio · Miami',
+  tagline: 'Trusted representation across Texas and Miami.',
+  markets: 'Texas · Miami',
 } as const;
 
 export const NAV = [
