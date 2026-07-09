@@ -1,0 +1,177 @@
+---
+import Button from './Button.astro';
+
+// "Areas We Serve" — a custom drawn map: Texas anchored in San Antonio,
+// reaching across the Gulf to Miami. Silhouettes are simplified on purpose,
+// styled dark with crimson markers for a modern, premium read.
+const areas = [
+  'San Antonio Metro',
+  'New Braunfels and Cibolo',
+  'Austin and the Hill Country',
+  'Across Texas',
+  'Miami and South Florida',
+];
+---
+<section class="areas section" aria-labelledby="areas-h">
+  <span class="wm" aria-hidden="true">AREAS</span>
+  <div class="container areas__grid">
+    <div class="areas__map" data-reveal>
+      <svg viewBox="0 0 700 430" role="img" aria-label="Map showing Texas and Florida with markers on San Antonio and Miami">
+        <defs>
+          <pattern id="mapgrid" width="22" height="22" patternUnits="userSpaceOnUse">
+            <path d="M22 0H0V22" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <!-- Texas (traced from GeoJSON, simplified) -->
+        <g>
+          <path class="areas__state" d="M144.5,24.1L193.4,24.1L193.4,84.2L201.5,89.8L213.4,89.2L215.3,95.1L234.2,99.7L237.6,96.8L242.8,98.2L250.9,106.3L255.6,102.2L267.5,106.0L269.7,109.9L276.5,102.9L278.4,106.5L292.0,111.4L297.3,106.7L312.1,103.8L320.5,105.6L322.3,102.9L345.0,115.8L354.2,115.7L354.2,163.9L360.1,170.7L368.1,196.6L362.6,207.8L363.7,221.3L357.3,232.3L359.7,235.4L341.2,239.8L336.2,237.4L335.3,232.3L329.2,235.0L327.9,239.4L331.1,247.1L318.0,260.8L301.7,269.0L288.4,269.1L283.4,266.1L290.5,274.1L280.5,275.1L263.5,308.4L260.5,307.5L259.8,311.6L262.9,310.6L259.2,323.6L268.5,350.0L260.2,353.2L256.8,349.1L242.0,347.9L229.3,342.3L215.7,333.0L208.3,318.0L207.5,303.8L185.4,279.0L175.2,253.5L155.3,233.3L130.3,229.8L129.0,233.0L122.5,234.0L109.3,257.1L104.9,257.3L71.8,236.9L61.3,208.0L26.0,180.2L14.2,166.8L14.9,163.7L110.7,163.7L111.4,24.1L144.5,24.1Z" />
+          <path class="areas__state-grid" d="M144.5,24.1L193.4,24.1L193.4,84.2L201.5,89.8L213.4,89.2L215.3,95.1L234.2,99.7L237.6,96.8L242.8,98.2L250.9,106.3L255.6,102.2L267.5,106.0L269.7,109.9L276.5,102.9L278.4,106.5L292.0,111.4L297.3,106.7L312.1,103.8L320.5,105.6L322.3,102.9L345.0,115.8L354.2,115.7L354.2,163.9L360.1,170.7L368.1,196.6L362.6,207.8L363.7,221.3L357.3,232.3L359.7,235.4L341.2,239.8L336.2,237.4L335.3,232.3L329.2,235.0L327.9,239.4L331.1,247.1L318.0,260.8L301.7,269.0L288.4,269.1L283.4,266.1L290.5,274.1L280.5,275.1L263.5,308.4L260.5,307.5L259.8,311.6L262.9,310.6L259.2,323.6L268.5,350.0L260.2,353.2L256.8,349.1L242.0,347.9L229.3,342.3L215.7,333.0L208.3,318.0L207.5,303.8L185.4,279.0L175.2,253.5L155.3,233.3L130.3,229.8L129.0,233.0L122.5,234.0L109.3,257.1L104.9,257.3L71.8,236.9L61.3,208.0L26.0,180.2L14.2,166.8L14.9,163.7L110.7,163.7L111.4,24.1L144.5,24.1Z" fill="url(#mapgrid)" />
+          <text class="areas__state-label" x="118" y="200">TEXAS</text>
+        </g>
+
+        <!-- Florida (traced from GeoJSON, simplified) -->
+        <g>
+          <path class="areas__state" d="M494.1,194.8L507.4,194.6L511.1,203.6L582.6,208.0L583.9,214.6L587.2,214.5L589.8,200.0L603.4,203.8L608.5,232.3L628.3,273.4L627.1,284.8L641.6,325.0L638.5,357.8L629.0,374.6L613.3,377.0L606.0,355.2L597.1,354.5L587.3,333.7L586.9,322.5L583.8,321.3L581.7,326.2L569.7,305.1L577.9,292.7L569.0,297.3L565.5,291.2L571.1,260.1L566.8,252.2L550.7,240.6L544.2,229.2L533.8,222.5L524.8,224.0L525.3,228.7L499.1,235.0L496.6,227.5L472.5,214.5L439.6,217.0L443.5,212.4L437.3,194.8L494.1,194.8Z" />
+          <path class="areas__state-grid" d="M494.1,194.8L507.4,194.6L511.1,203.6L582.6,208.0L583.9,214.6L587.2,214.5L589.8,200.0L603.4,203.8L608.5,232.3L628.3,273.4L627.1,284.8L641.6,325.0L638.5,357.8L629.0,374.6L613.3,377.0L606.0,355.2L597.1,354.5L587.3,333.7L586.9,322.5L583.8,321.3L581.7,326.2L569.7,305.1L577.9,292.7L569.0,297.3L565.5,291.2L571.1,260.1L566.8,252.2L550.7,240.6L544.2,229.2L533.8,222.5L524.8,224.0L525.3,228.7L499.1,235.0L496.6,227.5L472.5,214.5L439.6,217.0L443.5,212.4L437.3,194.8L494.1,194.8Z" fill="url(#mapgrid)" />
+          <text class="areas__state-label" x="571" y="282" transform="rotate(62 601 288)">FLORIDA</text>
+        </g>
+
+        <!-- Route: San Antonio to Miami -->
+        <path class="areas__route" d="M234,244 Q440,448 637,357" />
+
+        <!-- Secondary markets -->
+        <g class="areas__city">
+          <circle cx="280" cy="140" r="3.5" /><text x="290" y="144">Dallas</text>
+        </g>
+        <g class="areas__city">
+          <circle cx="318" cy="233" r="3.5" /><text x="303" y="224">Houston</text>
+        </g>
+        <g class="areas__city">
+          <circle cx="254" cy="217" r="3.5" /><text x="262" y="212">Austin</text>
+        </g>
+
+        <!-- Home base: San Antonio -->
+        <g class="areas__home">
+          <circle class="areas__pulse" cx="234" cy="244" r="9" />
+          <circle cx="234" cy="244" r="5" />
+          <text x="234" y="266" text-anchor="middle">San Antonio</text>
+        </g>
+
+        <!-- Miami -->
+        <g class="areas__home">
+          <circle class="areas__pulse" cx="637" cy="357" r="9" />
+          <circle cx="637" cy="357" r="5" />
+          <text class="areas__label-out" x="648" y="380">Miami</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="areas__copy" data-reveal>
+      <p class="label">Where I work</p>
+      <h2 id="areas-h" class="areas__title">Rooted In Texas. Growing In Miami.</h2>
+      <p class="areas__body">
+        Home base in San Antonio with an active reach across the state, from the Hill Country
+        to the coast. And when your move points southeast, a growing presence in Miami with a
+        trusted partner on the ground. One standard of service in every market.
+      </p>
+      <ul class="areas__list">
+        {areas.map((a) => (
+          <li>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
+            <span>{a}</span>
+          </li>
+        ))}
+      </ul>
+      <Button href="/contact" variant="outline">Ask About Your Area</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .areas {
+    position: relative;
+    background: var(--gray-light);
+    overflow: hidden;
+  }
+  .areas__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .areas__map svg { width: 100%; height: auto; display: block; }
+  .areas__state {
+    fill: #0d0d10;
+    stroke: rgba(153, 0, 0, 0.55);
+    stroke-width: 1.25;
+    stroke-linejoin: round;
+  }
+  .areas__state-grid { stroke: none; }
+  .areas__state-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    fill: rgba(255, 255, 255, 0.5);
+  }
+  .areas__route {
+    fill: none;
+    stroke: var(--crimson);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 7;
+    stroke-linecap: round;
+    opacity: 0.9;
+  }
+  .areas__city circle { fill: rgba(255, 255, 255, 0.75); }
+  .areas__city text {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    fill: rgba(255, 255, 255, 0.62);
+  }
+  .areas__home circle { fill: var(--crimson); }
+  .areas__home text {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    fill: #fff;
+  }
+  .areas__home .areas__label-out { fill: var(--ink); }
+  .areas__pulse {
+    fill: rgba(153, 0, 0, 0.35);
+    animation: areapulse 2.4s var(--ease) infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  @keyframes areapulse {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .areas__title { font-size: clamp(1.9rem, 3.2vw, 2.9rem); text-wrap: balance; }
+  .areas__body { color: var(--muted); margin-bottom: 1.75rem; }
+  .areas__list {
+    list-style: none;
+    margin: 0 0 2.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .areas__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 500;
+  }
+  .areas__list svg { color: var(--crimson); flex: none; }
+
+  @media (max-width: 900px) {
+    .areas__grid { grid-template-columns: 1fr; }
+  }
+</style>

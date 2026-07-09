@@ -1,16 +1,20 @@
 ---
 // Compact hero for interior pages. Dark, cinematic, room to breathe.
+// Accounts for the fixed overlay header, and can carry a ghost watermark
+// word (ABOUT / CONTACT / …) behind the title.
 interface Props {
   eyebrow: string;
   title: string;
   blurb?: string;
+  watermark?: string;
 }
-const { eyebrow, title, blurb } = Astro.props;
+const { eyebrow, title, blurb, watermark } = Astro.props;
 ---
 <section class="phero">
   <div class="phero__bg" aria-hidden="true"></div>
+  {watermark && <span class="wm wm--dark phero__wm" aria-hidden="true">{watermark}</span>}
   <div class="container phero__inner">
-    <p class="eyebrow phero__eyebrow">{eyebrow}</p>
+    <p class="label label--dark phero__label">{eyebrow}</p>
     <h1 class="phero__title">{title}</h1>
     {blurb && <p class="phero__blurb">{blurb}</p>}
   </div>
@@ -22,7 +26,7 @@ const { eyebrow, title, blurb } = Astro.props;
     background: var(--obsidian);
     color: #fff;
     overflow: hidden;
-    padding-top: clamp(3.5rem, 9vw, 7rem);
+    padding-top: calc(var(--header-h) + clamp(3rem, 8vw, 6rem));
     padding-bottom: clamp(3rem, 7vw, 5.5rem);
   }
   .phero__bg {
@@ -40,8 +44,8 @@ const { eyebrow, title, blurb } = Astro.props;
     background-size: 46px 46px;
     mask-image: radial-gradient(80% 70% at 50% 20%, #000, transparent 80%);
   }
-  .phero__inner { position: relative; max-width: 780px; }
-  .phero__eyebrow { color: #ff6b6b; }
+  .phero__wm { top: auto; bottom: -0.15em; }
+  .phero__inner { position: relative; z-index: 1; max-width: 780px; }
   .phero__title { font-size: var(--step-3); margin-bottom: 1rem; }
   .phero__blurb {
     font-size: var(--step-1);

@@ -1,5 +1,6 @@
 ---
-// Shared button/link. Primary = crimson fill. Outline = bordered.
+// Shared button/link, styled for the luxury direction: squared corners,
+// uppercase letterspaced type. Primary = crimson fill. Outline = thin border.
 // Renders <a> (default) — pass `href`. Set `variant` and `tone`.
 interface Props {
   href: string;
@@ -21,7 +22,7 @@ const {
   class={`btn btn--${variant} btn--${tone} ${className}`}
 >
   {dataSms && (
-    <svg class="btn__glyph" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <svg class="btn__glyph" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
       <path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/>
     </svg>
   )}
@@ -36,11 +37,12 @@ const {
     gap: 0.55rem;
     font-family: var(--font-body);
     font-weight: 600;
-    font-size: var(--step-0);
-    letter-spacing: 0.01em;
-    padding: 0.95rem 1.7rem;
-    border-radius: var(--radius);
-    border: 1.5px solid transparent;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 1.05rem 2rem;
+    border-radius: 2px;
+    border: 1px solid transparent;
     cursor: pointer;
     transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
                 border-color var(--dur) var(--ease), transform 0.15s var(--ease);
@@ -58,16 +60,16 @@ const {
   .btn--outline.btn--dark {
     background: transparent;
     color: var(--ink);
-    border-color: rgba(0, 0, 0, 0.28);
+    border-color: rgba(0, 0, 0, 0.35);
   }
-  .btn--outline.btn--dark:hover { border-color: var(--ink); }
+  .btn--outline.btn--dark:hover { border-color: var(--ink); background: rgba(0, 0, 0, 0.03); }
 
   .btn--outline.btn--light {
     background: transparent;
     color: var(--white);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.55);
   }
-  .btn--outline.btn--light:hover { border-color: var(--white); background: rgba(255, 255, 255, 0.08); }
+  .btn--outline.btn--light:hover { border-color: var(--white); background: rgba(255, 255, 255, 0.1); }
 
   .btn__glyph { flex: none; margin-top: -1px; }
 </style>

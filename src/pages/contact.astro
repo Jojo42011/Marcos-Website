@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
 import IntakeForm from '../components/IntakeForm.astro';
 import { smsHref, SMS_DISPLAY, BRAND } from '../config';
 ---
@@ -7,16 +8,19 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
   title={`Contact | ${BRAND.name} Real Estate`}
   description="Text Marco directly, or book a quick call. He replies fast, usually within the hour."
 >
+  <PageHero
+    eyebrow="Get in touch"
+    title="A Quick Text Is The Easiest Way."
+    blurb="It is genuinely how I move fastest, and it is how most of my clients already reach me. Prefer to share a little more first? The short form works too."
+    watermark="CONTACT"
+  />
+
   <section class="contact section">
     <div class="container contact__grid">
       <!-- Left: the promise -->
-      <div class="contact__left">
-        <p class="eyebrow">Get in touch</p>
-        <h1 class="contact__title">A quick text is the easiest way</h1>
-        <p class="contact__lead">
-          It is genuinely how I move fastest, and it is how most of my clients already reach me.
-          Prefer to share a little more first? Fill out the short form and I will come back with a plan.
-        </p>
+      <div class="contact__left" data-reveal>
+        <p class="label">Reach Marco</p>
+        <h2 class="contact__title">No Phone Tree. No Assistant. Just Me.</h2>
 
         <a href={smsHref()} class="contact__text-cta">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/></svg>
@@ -34,7 +38,7 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
       </div>
 
       <!-- Right: the form -->
-      <div class="contact__right">
+      <div class="contact__right" data-reveal>
         <div class="contact__form-head">
           <h2>Tell me a little about your move</h2>
           <p>Five quick questions so I show up to our call already knowing your situation.</p>
@@ -48,19 +52,18 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
 <style>
   .contact__grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
 
-  .contact__title { font-size: var(--step-3); margin-bottom: 1rem; }
-  .contact__lead { color: var(--muted); font-size: var(--step-1); }
+  .contact__title { font-size: var(--step-2); margin-bottom: 1.5rem; text-wrap: balance; }
 
   .contact__text-cta {
     display: inline-flex; align-items: center; gap: 1rem;
-    margin: 1.5rem 0 2rem;
+    margin: 0 0 2rem;
     padding: 1.1rem 1.5rem;
     background: var(--obsidian); color: #fff;
-    border-radius: var(--radius-lg);
+    border-radius: 2px;
     transition: transform 0.2s var(--ease);
   }
   .contact__text-cta:hover { transform: translateY(-2px); }
-  .contact__text-cta svg { color: var(--crimson); flex: none; }
+  .contact__text-cta svg { color: #ff6b6b; flex: none; }
   .contact__text-cta strong { display: block; font-size: 1.05rem; }
   .contact__text-cta em { font-style: normal; color: rgba(255,255,255,0.65); font-size: 0.9rem; }
 

@@ -1,0 +1,207 @@
+---
+import Button from './Button.astro';
+
+// Full screen hero: a slow crossfading slideshow of premium homes with a
+// centered serif headline, per the luxury reference. Replaces the old video.
+//
+// SWAP POINT: replace /photos/hero-*.jpg with photography of Marco's own
+// listings as it becomes available. Same filenames, no code changes.
+const slides = [
+  { src: '/photos/hero-1.jpg', alt: 'Modern estate with a pool at midday' },
+  { src: '/photos/hero-2.jpg', alt: 'Contemporary home overlooking the water' },
+  { src: '/photos/hero-3.jpg', alt: 'Modern single story home with a landscaped entry' },
+  { src: '/photos/hero-4.jpg', alt: 'Two story home with palms and a pool' },
+  { src: '/photos/hero-5.jpg', alt: 'Villa with an infinity pool at dusk' },
+];
+---
+<section class="shero" data-shero aria-label="Featured luxury homes">
+  <div class="shero__media" aria-hidden="true">
+    {slides.map((s, i) => (
+      <img
+        class={`shero__slide ${i === 0 ? 'is-active' : ''}`}
+        src={s.src}
+        alt=""
+        loading={i === 0 ? 'eager' : 'lazy'}
+        fetchpriority={i === 0 ? 'high' : 'auto'}
+        data-slide={i}
+      />
+    ))}
+    <div class="shero__scrim"></div>
+  </div>
+
+  <div class="container shero__inner">
+    <p class="shero__eyebrow">San Antonio &middot; Across Texas &middot; Miami</p>
+    <h1 class="shero__title">Here To Guide<br />You Home.</h1>
+    <span class="shero__rule" aria-hidden="true"></span>
+    <p class="shero__sub">Your Texas and Miami Real Estate Expert</p>
+    <div class="shero__cta">
+      <Button href="/buyers" variant="outline" tone="light">Your Guide To Buying</Button>
+      <Button href="/sellers" variant="outline" tone="light">Your Guide To Selling</Button>
+    </div>
+  </div>
+
+  <div class="shero__dots" data-shero-dots aria-hidden="true">
+    {slides.map((_, i) => (
+      <span class={`shero__dot ${i === 0 ? 'is-active' : ''}`} data-dot={i}></span>
+    ))}
+  </div>
+
+  <a href="#about" class="shero__scroll" aria-label="Scroll down">
+    <span class="shero__scroll-text">scroll down</span>
+    <span class="shero__scroll-line"></span>
+  </a>
+</section>
+
+<style>
+  .shero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+    background: #050506;
+  }
+  .shero__media { position: absolute; inset: 0; z-index: 0; }
+  .shero__slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1);
+    transition: opacity 1.6s var(--ease);
+  }
+  .shero__slide.is-active {
+    opacity: 1;
+    animation: kenburns 9s var(--ease) forwards;
+  }
+  @keyframes kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.08); }
+  }
+  .shero__scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.28) 30%, rgba(0,0,0,0.34) 100%),
+      radial-gradient(90% 70% at 50% 46%, rgba(0,0,0,0.34) 0%, transparent 100%);
+  }
+
+  .shero__inner {
+    position: relative; z-index: 1;
+    padding-block: clamp(7rem, 16vh, 10rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .shero__eyebrow {
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    font-size: 0.74rem;
+    color: rgba(255,255,255,0.75);
+    margin: 0 0 1.5rem;
+  }
+  .shero__title {
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: clamp(3rem, 9vw, 6.75rem);
+    line-height: 1.04;
+    letter-spacing: 0.005em;
+    margin: 0 0 1.75rem;
+    text-shadow: 0 2px 50px rgba(0,0,0,0.45);
+    text-wrap: balance;
+  }
+  .shero__rule {
+    width: 64px; height: 1px;
+    background: rgba(255,255,255,0.75);
+    margin-bottom: 1.5rem;
+  }
+  .shero__sub {
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.88);
+    margin: 0 0 2.5rem;
+  }
+  .shero__cta { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+
+  .shero__dots {
+    position: absolute;
+    right: clamp(1.25rem, 4vw, 3rem);
+    bottom: clamp(1.5rem, 5vh, 3rem);
+    z-index: 1;
+    display: flex;
+    gap: 0.55rem;
+  }
+  .shero__dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+  }
+  .shero__dot.is-active { background: #fff; transform: scale(1.25); }
+
+  .shero__scroll {
+    position: absolute;
+    left: 50%; bottom: clamp(1.25rem, 4vh, 2.5rem);
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(255,255,255,0.75);
+  }
+  .shero__scroll-text {
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .shero__scroll-line {
+    width: 1px; height: 44px;
+    background: rgba(255,255,255,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .shero__scroll-line::after {
+    content: '';
+    position: absolute; top: -50%; left: 0;
+    width: 100%; height: 50%;
+    background: #fff;
+    animation: scrollline 2s var(--ease) infinite;
+  }
+  @keyframes scrollline {
+    0% { top: -50%; }
+    100% { top: 110%; }
+  }
+
+  @media (max-width: 640px) {
+    .shero__scroll { display: none; }
+    .shero__dots { left: 50%; right: auto; transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shero__slide.is-active { animation: none; }
+  }
+</style>
+
+<script>
+  // Slow crossfade slideshow. The active slide gets a gentle Ken Burns zoom.
+  const hero = document.querySelector('[data-shero]');
+  if (hero) {
+    const slides = Array.from(hero.querySelectorAll<HTMLElement>('[data-slide]'));
+    const dots = Array.from(hero.querySelectorAll<HTMLElement>('[data-dot]'));
+    let current = 0;
+    if (slides.length > 1) {
+      setInterval(() => {
+        const prev = current;
+        current = (current + 1) % slides.length;
+        slides[prev].classList.remove('is-active');
+        slides[current].classList.add('is-active');
+        dots[prev]?.classList.remove('is-active');
+        dots[current]?.classList.add('is-active');
+      }, 6500);
+    }
+  }
+</script>
