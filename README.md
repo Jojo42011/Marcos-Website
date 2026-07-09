@@ -38,15 +38,20 @@ src/
   layouts/Base.astro     # <head>, header, footer, sticky text bar, scroll reveals
   components/
     Logo.astro           # Marco's real logo (dark + light-on-dark variants)
-    Header.astro         # solid white sticky nav
+    Header.astro         # fixed nav, centered logo, transparent → solid on scroll
     Footer.astro
-    Button.astro         # primary (crimson) / outline CTA
+    Button.astro         # squared, uppercase CTA — primary (crimson) / outline
     StickyTextBar.astro  # mobile-only bottom "Text Marco" bar
+    HeroSlideshow.astro  # full-screen crossfading slideshow hero
+    AboutTeaser.astro    # homepage About section (ghost ABOUT watermark)
+    WorkWith.astro       # dark Buy/Sell carousel with serial numbers
+    Areas.astro          # custom Texas → Miami SVG map section
+    Reviews.astro        # auto-rotating client reviews over estate photo
     FeaturedListings.astro # swipeable carousel of current listings (curated, not IDX)
     IntakeForm.astro     # 5-step intake form
-    PageHero.astro       # dark cinematic hero for interior pages
+    PageHero.astro       # dark cinematic hero for interior pages (+ watermark)
   pages/
-    index.astro          # Home
+    index.astro          # Home: hero → about → work → areas → reviews → listings → CTA
     buyers.astro         # The Buyer Experience
     sellers.astro        # The Seller Strategy
     about.astro          # Track Record
@@ -55,10 +60,16 @@ src/
   lib/crm.ts             # provider-swappable CRM adapter
   styles/
     tokens.css           # brand palette + type scale (change brand here)
-    global.css           # base styles
+    global.css           # base styles + .label / .wm luxury utilities
 public/
-  favicon.svg            # MP monogram favicon
+  photos/                # licensed Unsplash photography (all SWAP POINTs)
+  favicon.png            # MP emblem favicon
 ```
+
+## Copy rule
+
+Site copy never uses a hyphen or an em dash — write "first time buyers",
+"seven figure listing", and use commas or periods instead of dashes.
 
 ## Wiring the CRM (open item)
 
@@ -85,8 +96,11 @@ premium today. Search the code for **`SWAP POINT`** to find each one:
 
 | Asset | Where | Notes |
 |-------|-------|-------|
-| Hero video | `public/video/hero.mp4` | Live: a compressed (4.4 MB, 720p) muted loop with `hero-poster.jpg` for first paint. Replace both files to swap the clip. |
-| Featured listings | `src/components/FeaturedListings.astro` | Set `src` on each listing to a real `public/photos/*.jpg`, and point `href` at the live listing page. Curated by hand — no MLS/IDX approval needed; swap for a live IDX/RESO feed later with no layout change. |
+| Hero slideshow | `public/photos/hero-*.jpg` | Five licensed Unsplash luxury exteriors. Replace with photography of Marco's own listings — same filenames, no code changes. |
+| About photo | `public/photos/about-interior.jpg` | Replace with a professional portrait of Marco (`src/components/AboutTeaser.astro`). |
+| Buy/Sell panels | `public/photos/work-buy.jpg`, `work-sell.jpg` | Swap for Marco's own sold properties. |
+| Reviews | `src/components/Reviews.astro` | Replace placeholder quotes with real Google/Zillow reviews; swap `reviews-bg.jpg` for a signature listing shot. |
+| Featured listings | `src/components/FeaturedListings.astro` | `listing-*.jpg` are stand-ins. Set `src` per listing and point `href` at the live listing page. Curated by hand — no MLS/IDX approval needed; swap for a live IDX/RESO feed later with no layout change. |
 | Closing photos | `src/pages/about.astro` | Swap the `.shot__ph` placeholders for candid `public/photos/*.jpg`. |
 
 ## Logo

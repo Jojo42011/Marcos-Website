@@ -1,0 +1,98 @@
+---
+import Button from './Button.astro';
+
+// Homepage "About Marco" — editorial layout with the giant ghost word,
+// per the luxury reference. Photo carries a thin offset crimson frame.
+//
+// SWAP POINT: replace /photos/about-interior.jpg with a professional
+// portrait of Marco (or a candid closing shot) when available.
+---
+<section class="about section" id="about">
+  <span class="wm" aria-hidden="true">ABOUT</span>
+  <div class="container about__grid">
+    <div class="about__copy" data-reveal>
+      <p class="label">About Marco</p>
+      <h2 class="about__title">Proud To Be Your Texas And Miami Real Estate Expert.</h2>
+      <p class="about__lead">
+        Buying or selling a home is more than a transaction. It is one of the biggest moves of
+        your life, and you deserve someone who treats it that way.
+      </p>
+      <p class="about__body">
+        I began by helping families across Texas find their first homes, and referrals carried
+        that work into luxury listings well above a million dollars. Whatever the price point,
+        you get the same thing from me: straight answers, sharp negotiation, and an advocate
+        who protects your money like it is my own.
+      </p>
+      <div class="about__cta">
+        <Button href="/about" variant="outline">Read More</Button>
+      </div>
+    </div>
+
+    <figure class="about__figure" data-reveal>
+      <div class="about__frame" aria-hidden="true"></div>
+      <img
+        src="/photos/about-interior.jpg"
+        alt="A bright, modern living space in a recently closed home"
+        loading="lazy"
+        width="1400" height="952"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .about {
+    position: relative;
+    background: var(--white);
+    overflow: hidden;
+  }
+  .about__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    align-items: center;
+  }
+  .about__title {
+    font-size: clamp(1.9rem, 3.4vw, 3rem);
+    line-height: 1.14;
+    margin-bottom: 1.25rem;
+    text-wrap: balance;
+  }
+  .about__lead {
+    font-family: var(--font-head);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .about__body { color: var(--muted); margin-bottom: 2rem; }
+  .about__cta { display: flex; gap: 0.9rem; }
+
+  .about__figure {
+    position: relative;
+    margin: 0;
+    padding: clamp(1rem, 2vw, 1.5rem);
+  }
+  .about__figure img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 4 / 3.2;
+    object-fit: cover;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.16);
+  }
+  .about__frame {
+    position: absolute;
+    inset: 0;
+    transform: translate(clamp(0.75rem, 1.6vw, 1.25rem), clamp(0.75rem, 1.6vw, 1.25rem));
+    border: 1px solid rgba(153, 0, 0, 0.45);
+  }
+
+  @media (max-width: 900px) {
+    .about__grid { grid-template-columns: 1fr; }
+    .about__figure { order: -1; }
+  }
+</style>

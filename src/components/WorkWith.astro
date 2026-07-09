@@ -1,0 +1,216 @@
+---
+// "Work With Marco" — dark, cinematic panels with oversized serial numbers
+// and a white card overlapping each property photo, per the luxury reference.
+// Two panels: Buyers and Sellers, each deep linking to its page.
+const panels = [
+  {
+    num: '01',
+    tag: 'Buyers',
+    title: 'The best buying experience.',
+    text: 'From the first call to the keys in your hand, you get honest feedback on every home, a smart offer strategy, and a fast reply when it matters. Know what to expect and skip the common mistakes.',
+    cta: 'Buy With Marco',
+    href: '/buyers',
+    img: '/photos/work-buy.jpg',
+    alt: 'Modern home exterior with a landscaped walkway',
+  },
+  {
+    num: '02',
+    tag: 'Sellers',
+    title: 'A sale built on strategy.',
+    text: 'Professional presentation, honest pricing, and calm negotiation that protects your bottom line. Your home goes in front of the right buyers so they compete for it, and you land the best possible price.',
+    cta: 'Sell With Marco',
+    href: '/sellers',
+    img: '/photos/work-sell.jpg',
+    alt: 'Architectural home with warm timber cladding',
+  },
+];
+---
+<section class="work section" data-work aria-labelledby="work-h">
+  <span class="wm wm--dark" aria-hidden="true">START</span>
+  <div class="container work__head" data-reveal>
+    <p class="label label--center label--dark">Work with Marco</p>
+    <h2 id="work-h" class="work__title">Two Ways To Begin.</h2>
+  </div>
+
+  <div class="work__track" data-work-track>
+    {panels.map((p, i) => (
+      <article class="wpanel" data-reveal style={`--i:${i}`}>
+        <span class="wpanel__num" aria-hidden="true">{p.num}</span>
+        <div class="wpanel__media">
+          <img src={p.img} alt={p.alt} loading="lazy" />
+        </div>
+        <div class="wpanel__card">
+          <p class="wpanel__tag">{p.tag}</p>
+          <h3 class="wpanel__title">{p.title}</h3>
+          <p class="wpanel__text">{p.text}</p>
+          <a class="wpanel__btn" href={p.href}>{p.cta}</a>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="container work__nav">
+    <button type="button" class="work__arrow" data-work-prev aria-label="Previous panel">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button type="button" class="work__arrow" data-work-next aria-label="Next panel">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<style>
+  .work {
+    position: relative;
+    background: var(--obsidian);
+    color: #fff;
+    overflow: hidden;
+  }
+  .work__head {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .work__title {
+    font-size: var(--step-3);
+    margin: 0;
+  }
+
+  .work__track {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+    padding-block: 1rem 2rem;
+  }
+  .work__track::-webkit-scrollbar { display: none; }
+
+  .wpanel {
+    position: relative;
+    flex: 0 0 min(920px, 88vw);
+    scroll-snap-align: center;
+    display: grid;
+    grid-template-columns: 1.25fr 0.9fr;
+    align-items: center;
+    padding: clamp(1.5rem, 3vw, 3rem) 0;
+    transition-delay: calc(var(--i) * 120ms);
+  }
+  .wpanel__num {
+    position: absolute;
+    top: -0.5rem;
+    left: -0.75rem;
+    z-index: 0;
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: clamp(5rem, 11vw, 9rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(153, 0, 0, 0.85);
+  }
+  .wpanel__media {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .wpanel__media img {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    object-fit: cover;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  }
+  .wpanel__card {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+    z-index: 2;
+    background: var(--white);
+    color: var(--ink);
+    padding: clamp(1.75rem, 3.5vw, 3rem);
+    margin-left: clamp(-5rem, -6vw, -3rem);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+  .wpanel__tag {
+    font-family: var(--font-head);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--crimson);
+    margin: 0 0 0.5rem;
+  }
+  .wpanel__title { font-size: var(--step-2); margin-bottom: 0.75rem; }
+  .wpanel__text { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .wpanel__btn {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+    padding: 0.9rem 1.7rem;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .wpanel__btn:hover {
+    background: var(--crimson);
+    border-color: var(--crimson);
+    color: #fff;
+  }
+
+  .work__nav {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .work__arrow {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color 0.25s var(--ease), color 0.25s var(--ease), background 0.25s var(--ease);
+  }
+  .work__arrow:hover { border-color: var(--crimson); background: var(--crimson); }
+
+  @media (max-width: 760px) {
+    .wpanel {
+      grid-template-columns: 1fr;
+      flex-basis: 86vw;
+      padding-top: 3rem;
+    }
+    .wpanel__media { grid-column: 1; grid-row: 1; }
+    .wpanel__card {
+      grid-column: 1;
+      grid-row: 2;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      margin-top: -3rem;
+    }
+    .wpanel__num { left: 0; top: -1rem; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-work]').forEach((section) => {
+    const track = section.querySelector<HTMLElement>('[data-work-track]');
+    if (!track) return;
+    const step = () => {
+      const panel = track.querySelector<HTMLElement>('.wpanel');
+      const styles = getComputedStyle(track);
+      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 24;
+      return panel ? panel.getBoundingClientRect().width + gap : track.clientWidth * 0.9;
+    };
+    section.querySelector('[data-work-prev]')?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    section.querySelector('[data-work-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+  });
+</script>

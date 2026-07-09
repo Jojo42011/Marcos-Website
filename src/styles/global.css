@@ -1,6 +1,8 @@
 /* ==========================================================================
    Global base styles. Kept lean — components own their own layout.
    ========================================================================== */
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/400-italic.css';
 @import '@fontsource/playfair-display/500.css';
 @import '@fontsource/playfair-display/600.css';
 @import '@fontsource/playfair-display/700.css';
@@ -32,8 +34,8 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-head);
-  font-weight: 600;
-  line-height: 1.08;
+  font-weight: 500;
+  line-height: 1.1;
   letter-spacing: -0.01em;
   margin: 0 0 0.5em;
 }
@@ -56,6 +58,55 @@ img, video { max-width: 100%; height: auto; display: block; }
   color: var(--crimson);
   margin: 0 0 1rem;
 }
+
+/* Editorial label — italic serif with a short rule, per the luxury reference */
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--font-head);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--muted);
+  margin: 0 0 1.25rem;
+}
+.label::before {
+  content: '';
+  width: 44px;
+  height: 1px;
+  background: var(--crimson);
+  flex: none;
+}
+.label--center { justify-content: center; }
+.label--center::after {
+  content: '';
+  width: 44px;
+  height: 1px;
+  background: var(--crimson);
+  flex: none;
+}
+.label--dark { color: rgba(255, 255, 255, 0.65); }
+
+/* Giant ghost watermark word behind a section (ABOUT / AREAS / START …) */
+.wm {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(7rem, 24vw, 22rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: rgba(11, 11, 12, 0.04);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.wm--dark { color: rgba(255, 255, 255, 0.045); }
+.wm--left { left: var(--gutter); transform: none; }
 
 .container {
   width: 100%;

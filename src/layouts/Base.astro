@@ -11,9 +11,10 @@ interface Props {
 }
 const {
   title = `${BRAND.name} Real Estate | ${BRAND.tagline}`,
-  description = 'Clear, experienced real estate guidance for buyers and sellers across Texas and Miami. From a family’s first home to a seven-figure listing, you get sharp market insight, careful negotiation, and an advocate who protects your interests.',
+  description = 'Clear, experienced real estate guidance for buyers and sellers across Texas and Miami. From a family’s first home to a listing above a million dollars, you get sharp market insight, careful negotiation, and an advocate who protects your interests.',
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL('/photos/hero-1.jpg', Astro.site).toString();
 ---
 <!doctype html>
 <html lang="en">
@@ -33,6 +34,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={`${BRAND.name} Real Estate`} />
+    <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>

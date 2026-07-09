@@ -1,0 +1,194 @@
+---
+// Client reviews over a full bleed dusk estate photo. Quotes rotate
+// automatically with a gentle crossfade; dots let you jump between them.
+//
+// SWAP POINT: replace these with Marco's real client reviews (Google,
+// Zillow, past clients). Keep them short and specific, no marketing filler.
+const reviews = [
+  {
+    quote: 'Marco told us the truth about every house we walked, even the ones he knew we loved. We closed on the right home at the right price because of it.',
+    name: 'Ashley R.',
+    detail: 'Bought in San Antonio',
+  },
+  {
+    quote: 'He answered every text within minutes, walked us through each step, and negotiated repairs we did not even know we could ask for.',
+    name: 'David and Elena M.',
+    detail: 'Bought in Cibolo',
+  },
+  {
+    quote: 'Our home sat with another agent for months. Marco priced it honestly, brought in a real photographer, and we were under contract in eleven days.',
+    name: 'Robert T.',
+    detail: 'Sold in San Antonio',
+  },
+  {
+    quote: 'We moved from out of state and he handled everything before we ever landed. It felt like having family in Texas looking out for us.',
+    name: 'Priya S.',
+    detail: 'Relocated to Texas',
+  },
+];
+---
+<section class="reviews" data-reviews aria-labelledby="reviews-h">
+  <div class="reviews__bg" aria-hidden="true">
+    <img src="/photos/reviews-bg.jpg" alt="" loading="lazy" />
+    <div class="reviews__scrim"></div>
+  </div>
+
+  <div class="container container--tight reviews__inner">
+    <p class="label label--center label--dark" data-reveal>Client reviews</p>
+    <h2 id="reviews-h" class="reviews__title" data-reveal>Word Travels.</h2>
+
+    <div class="reviews__stage" data-reveal>
+      {reviews.map((r, i) => (
+        <blockquote class={`review ${i === 0 ? 'is-active' : ''}`} data-review={i}>
+          <div class="review__stars" aria-label="Five star review">
+            {Array.from({ length: 5 }).map(() => (
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path fill="currentColor" d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8Z"/>
+              </svg>
+            ))}
+          </div>
+          <p class="review__quote">&ldquo;{r.quote}&rdquo;</p>
+          <footer class="review__by">
+            <span class="review__name">{r.name}</span>
+            <span class="review__detail">{r.detail}</span>
+          </footer>
+        </blockquote>
+      ))}
+    </div>
+
+    <div class="reviews__dots" data-reviews-dots>
+      {reviews.map((_, i) => (
+        <button
+          type="button"
+          class={`reviews__dot ${i === 0 ? 'is-active' : ''}`}
+          data-review-dot={i}
+          aria-label={`Show review ${i + 1}`}
+        ></button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews {
+    position: relative;
+    color: #fff;
+    overflow: hidden;
+    padding-block: clamp(5rem, 11vw, 9.5rem);
+  }
+  .reviews__bg { position: absolute; inset: 0; z-index: 0; }
+  .reviews__bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .reviews__scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 50%, rgba(0,0,0,0.72) 100%);
+  }
+
+  .reviews__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .reviews__title { font-size: var(--step-3); margin-bottom: clamp(2rem, 4vw, 3rem); }
+
+  /* Stage holds all quotes stacked; the active one fades in */
+  .reviews__stage { position: relative; min-height: 16.5rem; }
+  .review {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease), visibility 0s linear 0.8s;
+  }
+  .review.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 0.8s var(--ease) 0.15s, transform 0.8s var(--ease) 0.15s, visibility 0s;
+  }
+
+  .review__stars {
+    display: flex;
+    justify-content: center;
+    gap: 0.35rem;
+    color: #ff6b6b;
+    margin-bottom: 1.5rem;
+  }
+  .review__quote {
+    font-family: var(--font-head);
+    font-size: clamp(1.25rem, 2.6vw, 1.9rem);
+    line-height: 1.4;
+    text-wrap: balance;
+    margin: 0 0 1.75rem;
+  }
+  .review__by {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .review__name {
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+  }
+  .review__detail {
+    font-family: var(--font-head);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .reviews__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .reviews__dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .reviews__dot.is-active { background: #fff; transform: scale(1.2); }
+
+  @media (max-width: 640px) {
+    .reviews__stage { min-height: 22rem; }
+  }
+</style>
+
+<script>
+  const section = document.querySelector('[data-reviews]');
+  if (section) {
+    const quotes = Array.from(section.querySelectorAll<HTMLElement>('[data-review]'));
+    const dots = Array.from(section.querySelectorAll<HTMLElement>('[data-review-dot]'));
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const show = (idx: number) => {
+      quotes[current]?.classList.remove('is-active');
+      dots[current]?.classList.remove('is-active');
+      current = idx;
+      quotes[current]?.classList.add('is-active');
+      dots[current]?.classList.add('is-active');
+    };
+    const start = () => {
+      if (quotes.length > 1) timer = setInterval(() => show((current + 1) % quotes.length), 6000);
+    };
+    const stop = () => timer && clearInterval(timer);
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { stop(); show(i); start(); }));
+    section.addEventListener('mouseenter', stop);
+    section.addEventListener('mouseleave', () => { stop(); start(); });
+    start();
+  }
+</script>
