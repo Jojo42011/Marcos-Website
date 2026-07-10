@@ -4,8 +4,8 @@ import Button from './Button.astro';
 // Homepage "About Marco" — editorial layout with the giant ghost word,
 // per the luxury reference. Photo carries a thin offset crimson frame.
 //
-// SWAP POINT: replace /photos/about-interior.jpg with a professional
-// portrait of Marco (or a candid closing shot) when available.
+// SWAP POINT: /photos/marco.jpg is Marco's own portrait. Replace with an
+// updated headshot when available (keep the filename).
 ---
 <section class="about section" id="about">
   <span class="wm" aria-hidden="true">ABOUT</span>
@@ -31,10 +31,10 @@ import Button from './Button.astro';
     <figure class="about__figure" data-reveal>
       <div class="about__frame" aria-hidden="true"></div>
       <img
-        src="/photos/about-interior.jpg"
-        alt="A bright, modern living space in a recently closed home"
+        src="/photos/marco.jpg"
+        alt="Marco Puga, real estate advisor, in San Antonio"
         loading="lazy"
-        width="1400" height="952"
+        width="1254" height="1254"
       />
     </figure>
   </div>
@@ -80,8 +80,9 @@ import Button from './Button.astro';
     position: relative;
     z-index: 1;
     width: 100%;
-    aspect-ratio: 4 / 3.2;
+    aspect-ratio: 4 / 4.6;
     object-fit: cover;
+    object-position: 55% center;
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.16);
   }
   .about__frame {
