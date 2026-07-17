@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import IntakeForm from '../components/IntakeForm.astro';
-import { smsHref, SMS_DISPLAY, BRAND } from '../config';
+import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from '../config';
 ---
 <Base
   title={`Contact | ${BRAND.name} Real Estate`}
@@ -35,6 +35,27 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
           <li><span>🎯</span> A quick call tells us both if it is a good fit.</li>
           <li><span>🤝</span> No pressure and no sales pitch, just straight answers.</li>
         </ul>
+
+        <div class="contact__office">
+          <div class="contact__office-rows">
+            <div class="contact__office-item">
+              <span class="contact__office-label">Email</span>
+              <a href={mailtoHref(EMAIL)}>{EMAIL}</a>
+            </div>
+            <div class="contact__office-item">
+              <span class="contact__office-label">Office</span>
+              <address>{OFFICE.brokerage}<br />{OFFICE.addressLine1}, {OFFICE.addressLine2}</address>
+            </div>
+            <div class="contact__office-item">
+              <span class="contact__office-label">Office phone</span>
+              <a href={telHref(OFFICE.phone)}>{OFFICE.phoneDisplay}</a>
+            </div>
+            <div class="contact__office-item">
+              <span class="contact__office-label">Office email</span>
+              <a href={mailtoHref(OFFICE.email)}>{OFFICE.email}</a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Right: the form -->
@@ -70,6 +91,33 @@ import { smsHref, SMS_DISPLAY, BRAND } from '../config';
   .contact__promises { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
   .contact__promises li { display: flex; align-items: center; gap: 0.75rem; color: var(--ink); font-weight: 500; }
   .contact__promises span { font-size: 1.05rem; }
+
+  .contact__office {
+    margin-top: 2rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .contact__office-rows { display: grid; gap: 1rem; }
+  .contact__office-item { display: grid; gap: 0.15rem; }
+  .contact__office-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .contact__office-item address {
+    font-style: normal;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .contact__office-item a {
+    color: var(--ink);
+    font-weight: 500;
+    transition: color 0.2s var(--ease);
+    word-break: break-word;
+  }
+  .contact__office-item a:hover { color: var(--crimson); }
 
   .contact__form-head { margin-bottom: 1.5rem; }
   .contact__form-head h2 { font-size: var(--step-2); margin-bottom: 0.4rem; }

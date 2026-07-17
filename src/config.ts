@@ -13,6 +13,25 @@ export const SMS_PREFILL =
 export const smsHref = (body: string = SMS_PREFILL) =>
   `sms:+${SMS_NUMBER}?&body=${encodeURIComponent(body)}`;
 
+// Marco's direct email.
+export const EMAIL = 'pmarcopuga@gmail.com';
+export const mailtoHref = (address: string) => `mailto:${address}`;
+
+// Brokerage / office details. Required on the site for MLS compliance:
+// every listing agent must display their sponsoring broker's name,
+// address, and contact info. Marco is brokered by eXp Realty.
+export const OFFICE = {
+  brokerage: 'eXp Realty',
+  addressLine1: '300 North Main Avenue',
+  addressLine2: 'San Antonio, TX 78205',
+  address: '300 North Main Avenue, San Antonio, TX 78205',
+  email: 'marco.puga@exprealty.com',
+  phone: '12108012380',        // E.164 without '+'
+  phoneDisplay: '(210) 801-2380',
+} as const;
+
+export const telHref = (digits: string) => `tel:+${digits}`;
+
 export const BRAND = {
   name: 'Marco Puga',
   role: 'Real Estate',
