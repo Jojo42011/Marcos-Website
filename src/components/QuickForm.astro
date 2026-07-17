@@ -1,0 +1,182 @@
+---
+// Compact single-view contact form. Everything is visible at once so a
+// visitor can fire it off in a few seconds without scrolling. Posts to
+// /api/lead, same endpoint and CRM path as before.
+import { smsHref } from '../config';
+---
+<form class="qform" data-qform novalidate>
+  <div class="qform__grid">
+    <label class="qfield">
+      <span>Your name</span>
+      <input type="text" name="name" autocomplete="name" placeholder="First and last" required />
+    </label>
+    <label class="qfield">
+      <span>Phone or email</span>
+      <input type="text" name="contact" autocomplete="tel" placeholder="So Marco can reach you" required />
+    </label>
+  </div>
+
+  <div class="qfield">
+    <span>I am looking to</span>
+    <div class="qseg" role="radiogroup" aria-label="I am looking to">
+      <label class="qseg__opt"><input type="radio" name="intent" value="buy" required /><span>Buy</span></label>
+      <label class="qseg__opt"><input type="radio" name="intent" value="sell" /><span>Sell</span></label>
+      <label class="qseg__opt"><input type="radio" name="intent" value="both" /><span>Both</span></label>
+    </div>
+  </div>
+
+  <label class="qfield">
+    <span>What is on your mind? <em>optional</em></span>
+    <textarea name="reason" rows="3" placeholder="A sentence about your move. Areas you like, price range, timeline, whatever you have."></textarea>
+  </label>
+
+  <!-- honeypot: hidden from humans -->
+  <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
+    <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <button type="submit" class="qform__submit" data-submit>Send to Marco</button>
+  <p class="qform__fine">I reply fast, usually within the hour.</p>
+
+  <!-- success state -->
+  <div class="qform__done" data-done hidden>
+    <div class="qform__done-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
+    </div>
+    <h3>Got it. Thanks for reaching out.</h3>
+    <p>Marco reads every one of these himself and replies fast, usually within the hour. Want to skip the wait?</p>
+    <a class="qform__done-text" href={smsHref('Hi Marco, I just filled out your form. ')}>Text him now</a>
+  </div>
+
+  <p class="qform__error" data-error hidden role="alert"></p>
+</form>
+
+<style>
+  .qform {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+  }
+  .qform__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.1rem; }
+  .qfield { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+  .qfield > span {
+    font-size: 0.8rem; font-weight: 600; color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .qfield > span em { font-style: normal; color: var(--muted); font-weight: 500; }
+
+  .qform input[type="text"],
+  .qform textarea {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--ink);
+    resize: vertical;
+  }
+  .qform input:focus, .qform textarea:focus { border-color: var(--crimson); outline: none; }
+
+  /* segmented Buy / Sell / Both */
+  .qseg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .qseg__opt {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0.85rem 0.5rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .qseg__opt:hover { border-color: rgba(0,0,0,0.35); }
+  .qseg__opt input { position: absolute; opacity: 0; }
+  .qseg__opt:has(input:checked) {
+    border-color: var(--crimson);
+    background: rgba(153, 0, 0, 0.04);
+    box-shadow: inset 0 0 0 1px var(--crimson);
+  }
+  .qseg__opt:has(input:focus-visible) { outline: 3px solid var(--crimson); outline-offset: 2px; }
+
+  .qform__submit {
+    width: 100%;
+    margin-top: 0.5rem;
+    background: var(--crimson); color: #fff;
+    border: 0; border-radius: var(--radius);
+    padding: 1.05rem 1.7rem;
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s var(--ease);
+  }
+  .qform__submit:hover { background: var(--crimson-hover); }
+  .qform__fine { margin: 0.85rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+
+  .qform__done { text-align: center; padding: 0.5rem 0; }
+  .qform__done-mark {
+    width: 58px; height: 58px; margin: 0 auto 1rem;
+    display: grid; place-items: center;
+    background: var(--crimson); color: #fff; border-radius: 50%;
+  }
+  .qform__done h3 { font-size: var(--step-2); }
+  .qform__done p { color: var(--muted); max-width: 42ch; margin-inline: auto; }
+  .qform__done-text {
+    display: inline-block; margin-top: 0.5rem;
+    color: var(--crimson); font-weight: 700; font-size: var(--step-1);
+  }
+  .qform__error {
+    margin: 1rem 0 0; padding: 0.85rem 1rem;
+    background: rgba(153,0,0,0.06); border: 1px solid rgba(153,0,0,0.25);
+    border-radius: var(--radius); color: var(--crimson); font-size: 0.9rem; font-weight: 500;
+  }
+
+  @media (max-width: 520px) {
+    .qform__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('[data-qform]') as HTMLFormElement | null;
+  if (form) {
+    const submitBtn = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const doneEl = form.querySelector<HTMLElement>('[data-done]');
+    const errEl = form.querySelector<HTMLElement>('[data-error]');
+
+    const showErr = (msg: string) => { if (errEl) { errEl.textContent = msg; errEl.hidden = false; } };
+    const clearErr = () => { if (errEl) errEl.hidden = true; };
+
+    const valid = () => {
+      const name = (form.elements.namedItem('name') as HTMLInputElement)?.value.trim();
+      const contact = (form.elements.namedItem('contact') as HTMLInputElement)?.value.trim();
+      const intent = form.querySelector<HTMLInputElement>('input[name="intent"]:checked');
+      if (!name) return 'Add your name so Marco knows who he is talking to.';
+      if (!contact) return 'Add a phone or email so Marco can reach you.';
+      if (!intent) return 'Let Marco know if you are buying, selling, or both.';
+      return null;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErr();
+      const problem = valid();
+      if (problem) { showErr(problem); return; }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+      try {
+        const res = await fetch('/api/lead', { method: 'POST', body: new FormData(form) });
+        const out = await res.json().catch(() => ({ ok: false }));
+        if (!res.ok || !out.ok) throw new Error(out.error || 'Failed');
+        form.querySelectorAll('.qfield, .qform__grid, .qform__submit, .qform__fine').forEach((el) => (el as HTMLElement).hidden = true);
+        if (doneEl) doneEl.hidden = false;
+      } catch (err) {
+        showErr(err instanceof Error && err.message !== 'Failed' ? err.message
+          : "Couldn't send that. Text Marco directly and he'll take care of you.");
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send to Marco'; }
+      }
+    });
+  }
+</script>
