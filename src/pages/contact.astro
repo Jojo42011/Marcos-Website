@@ -1,26 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
-import IntakeForm from '../components/IntakeForm.astro';
+import QuickForm from '../components/QuickForm.astro';
 import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from '../config';
 ---
 <Base
   title={`Contact | ${BRAND.name} Real Estate`}
-  description="Text Marco directly, or book a quick call. He replies fast, usually within the hour."
+  description="Text Marco directly, or send a quick message. He replies fast, usually within the hour."
+  solidHeader={true}
 >
-  <PageHero
-    eyebrow="Get in touch"
-    title="A Quick Text Is The Easiest Way."
-    blurb="It is genuinely how I move fastest, and it is how most of my clients already reach me. Prefer to share a little more first? The short form works too."
-    watermark="CONTACT"
-  />
-
-  <section class="contact section">
+  <section class="contact">
     <div class="container contact__grid">
-      <!-- Left: the promise -->
-      <div class="contact__left" data-reveal>
-        <p class="label">Reach Marco</p>
-        <h2 class="contact__title">No Phone Tree. No Assistant. Just Me.</h2>
+      <!-- Left: the promise + text CTA -->
+      <div class="contact__left">
+        <p class="label">Get in touch</p>
+        <h1 class="contact__title">Let&rsquo;s Talk. It&rsquo;s Quick.</h1>
+        <p class="contact__lead">
+          A text is the fastest way to reach me, and it is how most of my clients already do.
+          Prefer to send a few details first? Fill out the form and I will come back with a plan.
+        </p>
 
         <a href={smsHref()} class="contact__text-cta">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/></svg>
@@ -32,52 +29,57 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
 
         <ul class="contact__promises">
           <li><span>⚡</span> I reply fast, usually within the hour.</li>
-          <li><span>🎯</span> A quick call tells us both if it is a good fit.</li>
           <li><span>🤝</span> No pressure and no sales pitch, just straight answers.</li>
         </ul>
-
-        <div class="contact__office">
-          <div class="contact__office-rows">
-            <div class="contact__office-item">
-              <span class="contact__office-label">Email</span>
-              <a href={mailtoHref(EMAIL)}>{EMAIL}</a>
-            </div>
-            <div class="contact__office-item">
-              <span class="contact__office-label">Office</span>
-              <address>{OFFICE.brokerage}<br />{OFFICE.addressLine1}, {OFFICE.addressLine2}</address>
-            </div>
-            <div class="contact__office-item">
-              <span class="contact__office-label">Office phone</span>
-              <a href={telHref(OFFICE.phone)}>{OFFICE.phoneDisplay}</a>
-            </div>
-            <div class="contact__office-item">
-              <span class="contact__office-label">Office email</span>
-              <a href={mailtoHref(OFFICE.email)}>{OFFICE.email}</a>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Right: the form -->
-      <div class="contact__right" data-reveal>
-        <div class="contact__form-head">
-          <h2>Tell me a little about your move</h2>
-          <p>Five quick questions so I show up to our call already knowing your situation.</p>
-        </div>
-        <IntakeForm />
+      <!-- Right: the quick form -->
+      <div class="contact__right">
+        <QuickForm />
+      </div>
+    </div>
+
+    <!-- Office / brokerage details (MLS). Compact strip below the fold. -->
+    <div class="container contact__office">
+      <div class="contact__office-item">
+        <span class="contact__office-label">Email</span>
+        <a href={mailtoHref(EMAIL)}>{EMAIL}</a>
+      </div>
+      <div class="contact__office-item">
+        <span class="contact__office-label">Office</span>
+        <address>{OFFICE.brokerage}, {OFFICE.addressLine1}, {OFFICE.addressLine2}</address>
+      </div>
+      <div class="contact__office-item">
+        <span class="contact__office-label">Office phone</span>
+        <a href={telHref(OFFICE.phone)}>{OFFICE.phoneDisplay}</a>
+      </div>
+      <div class="contact__office-item">
+        <span class="contact__office-label">Office email</span>
+        <a href={mailtoHref(OFFICE.email)}>{OFFICE.email}</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .contact__grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  /* Top padding clears the fixed header; page opens straight on the form. */
+  .contact {
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 0.82fr 1.18fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
 
-  .contact__title { font-size: var(--step-2); margin-bottom: 1.5rem; text-wrap: balance; }
+  .contact__title { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; text-wrap: balance; }
+  .contact__lead { color: var(--muted); font-size: var(--step-1); margin-bottom: 1.75rem; }
 
   .contact__text-cta {
     display: inline-flex; align-items: center; gap: 1rem;
-    margin: 0 0 2rem;
+    margin: 0 0 1.75rem;
     padding: 1.1rem 1.5rem;
     background: var(--obsidian); color: #fff;
     border-radius: 2px;
@@ -88,17 +90,20 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
   .contact__text-cta strong { display: block; font-size: 1.05rem; }
   .contact__text-cta em { font-style: normal; color: rgba(255,255,255,0.65); font-size: 0.9rem; }
 
-  .contact__promises { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+  .contact__promises { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
   .contact__promises li { display: flex; align-items: center; gap: 0.75rem; color: var(--ink); font-weight: 500; }
   .contact__promises span { font-size: 1.05rem; }
 
+  /* Office strip */
   .contact__office {
-    margin-top: 2rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
     padding-top: 1.75rem;
     border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
   }
-  .contact__office-rows { display: grid; gap: 1rem; }
-  .contact__office-item { display: grid; gap: 0.15rem; }
+  .contact__office-item { display: grid; gap: 0.25rem; align-content: start; }
   .contact__office-label {
     font-size: 0.68rem;
     font-weight: 700;
@@ -106,24 +111,21 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
     text-transform: uppercase;
     color: var(--crimson);
   }
-  .contact__office-item address {
-    font-style: normal;
-    color: var(--ink);
-    line-height: 1.5;
-  }
+  .contact__office-item address { font-style: normal; color: var(--ink); line-height: 1.5; font-size: 0.95rem; }
   .contact__office-item a {
     color: var(--ink);
     font-weight: 500;
+    font-size: 0.95rem;
     transition: color 0.2s var(--ease);
     word-break: break-word;
   }
   .contact__office-item a:hover { color: var(--crimson); }
 
-  .contact__form-head { margin-bottom: 1.5rem; }
-  .contact__form-head h2 { font-size: var(--step-2); margin-bottom: 0.4rem; }
-  .contact__form-head p { color: var(--muted); margin: 0; }
-
   @media (max-width: 900px) {
-    .contact__grid { grid-template-columns: 1fr; }
+    .contact__grid { grid-template-columns: 1fr; align-items: start; }
+    .contact__office { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .contact__office { grid-template-columns: 1fr; }
   }
 </style>

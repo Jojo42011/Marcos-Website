@@ -4,7 +4,10 @@ import { sendLead, type Lead } from '../../lib/crm';
 // Server-rendered endpoint (not prerendered) so it can talk to the CRM.
 export const prerender = false;
 
-const REQUIRED = ['intent', 'priceRange', 'timeline', 'preApproved', 'reason'] as const;
+// The quick contact form only needs enough to reach the lead with context:
+// what they want (intent) and how to reach them (contact). Everything else
+// is optional so the form stays fast.
+const REQUIRED = ['intent', 'contact'] as const;
 
 export const POST: APIRoute = async ({ request }) => {
   let data: Record<string, unknown>;
@@ -33,14 +36,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   const lead: Lead = {
     intent: String(data.intent) as Lead['intent'],
-    priceRange: String(data.priceRange),
-    timeline: String(data.timeline),
-    preApproved: String(data.preApproved ?? 'n/a'),
-    reason: String(data.reason).slice(0, 2000),
+    priceRange: data.priceRange ? String(data.priceRange) : 'Not specified',
+    timeline: data.timeline ? String(data.timeline) : 'Not specified',
+    preApproved: data.preApproved ? String(data.preApproved) : 'Not specified',
+    reason: data.reason ? String(data.reason).slice(0, 2000) : 'Not specified',
     name: data.name ? String(data.name).slice(0, 120) : undefined,
     contact: data.contact ? String(data.contact).slice(0, 160) : undefined,
     submittedAt: new Date().toISOString(),
-    source: 'marcopuga.com intake form',
+    source: 'marcopuga.com contact form',
   };
 
   try {

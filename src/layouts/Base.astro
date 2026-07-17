@@ -8,10 +8,12 @@ import { BRAND } from '../config';
 interface Props {
   title?: string;
   description?: string;
+  solidHeader?: boolean; // force the solid header on pages that open on a light bg
 }
 const {
   title = `${BRAND.name} Real Estate | ${BRAND.tagline}`,
   description = 'Clear, experienced real estate guidance for buyers and sellers across Texas and Miami. From a family’s first home to a listing above a million dollars, you get sharp market insight, careful negotiation, and an advocate who protects your interests.',
+  solidHeader = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = new URL('/photos/hero-1.jpg', Astro.site).toString();
@@ -39,7 +41,7 @@ const ogImage = new URL('/photos/hero-1.jpg', Astro.site).toString();
   </head>
   <body>
     <a href="#main" class="visually-hidden">Skip to content</a>
-    <Header />
+    <Header solid={solidHeader} />
     <main id="main">
       <slot />
     </main>

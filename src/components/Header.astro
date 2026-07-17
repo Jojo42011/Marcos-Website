@@ -3,13 +3,20 @@ import { NAV, smsHref, SMS_DISPLAY } from '../config';
 
 // Fixed header with the logo centered, per the luxury reference sites.
 // Starts transparent over the dark hero (light links + light logo), then
-// turns solid white with dark links once you scroll. Every page opens with
-// a dark hero, so the overlay state always reads correctly.
+// turns solid white with dark links once you scroll.
+//
+// Pages that open with a dark hero use the default overlay state. Pages
+// that open on a light background (e.g. the contact form) pass `solid` so
+// the header is solid from the first paint and its dark links stay legible.
+interface Props {
+  solid?: boolean;
+}
+const { solid = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 const leftNav = NAV.slice(0, 2);   // Buyers, Sellers
 const rightNav = NAV.slice(2);     // About, Contact
 ---
-<header class="site-header" data-header>
+<header class={`site-header${solid ? ' is-solid' : ''}`} data-header data-solid={solid ? 'true' : undefined}>
   <div class="site-header__inner container">
     <nav class="site-header__nav site-header__nav--left" aria-label="Primary left">
       {leftNav.map((item) => (
@@ -199,10 +206,12 @@ const rightNav = NAV.slice(2);     // About, Contact
   const toggle = document.querySelector('[data-nav-toggle]');
   const drawer = document.querySelector('[data-mobile-nav]');
 
+  // Pages that open on a light background force the solid state from load.
+  const forcedSolid = header?.getAttribute('data-solid') === 'true';
   const drawerOpen = () => drawer?.hasAttribute('data-open');
   const sync = () => {
     if (!header) return;
-    header.classList.toggle('is-solid', window.scrollY > 40 || !!drawerOpen());
+    header.classList.toggle('is-solid', forcedSolid || window.scrollY > 40 || !!drawerOpen());
   };
   sync();
   window.addEventListener('scroll', sync, { passive: true });
