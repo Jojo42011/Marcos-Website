@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { NAV, smsHref, SMS_DISPLAY, BRAND } from '../config';
+import { NAV, smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from '../config';
 const year = 2026; // build-time constant; bump on rebuild
 ---
 <footer class="site-footer">
@@ -9,6 +9,13 @@ const year = 2026; // build-time constant; bump on rebuild
       <Logo onDark={true} />
       <p class="site-footer__tag">{BRAND.tagline}</p>
       <p class="site-footer__markets">{BRAND.markets}</p>
+
+      <!-- Brokerage affiliation (MLS compliance). Logo is a black wordmark,
+           inverted to white so it reads on the dark footer. -->
+      <div class="site-footer__broker">
+        <span class="site-footer__broker-label">Brokered by</span>
+        <img class="site-footer__broker-logo" src="/brand/exp-logo.png" alt="eXp Realty" width="1620" height="840" />
+      </div>
     </div>
 
     <div class="site-footer__cols">
@@ -16,18 +23,30 @@ const year = 2026; // build-time constant; bump on rebuild
         <h4>Explore</h4>
         {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
+
       <div class="site-footer__col">
         <h4>Reach Marco</h4>
         <a href={smsHref()} class="site-footer__text">Text {SMS_DISPLAY}</a>
+        <a href={mailtoHref(EMAIL)}>{EMAIL}</a>
         <a href="/contact">Book a call</a>
         <p class="site-footer__note">I reply fast, usually within the hour.</p>
+      </div>
+
+      <div class="site-footer__col">
+        <h4>Office</h4>
+        <p class="site-footer__broker-name">{OFFICE.brokerage}</p>
+        <address class="site-footer__address">
+          {OFFICE.addressLine1}<br />{OFFICE.addressLine2}
+        </address>
+        <a href={telHref(OFFICE.phone)}>{OFFICE.phoneDisplay}</a>
+        <a href={mailtoHref(OFFICE.email)}>{OFFICE.email}</a>
       </div>
     </div>
   </div>
 
   <div class="container site-footer__legal">
     <span>© {year} {BRAND.name} Real Estate. All rights reserved.</span>
-    <span>San Antonio, TX · serving Texas and Miami, FL. Licensed real estate professional.</span>
+    <span>{OFFICE.brokerage} · {OFFICE.address}. Licensed real estate professional serving Texas and Miami, FL.</span>
   </div>
 </footer>
 
@@ -40,8 +59,8 @@ const year = 2026; // build-time constant; bump on rebuild
   }
   .site-footer__inner {
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: clamp(2.5rem, 6vw, 6rem);
+    grid-template-columns: 1.2fr 1.8fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
     padding-bottom: 3rem;
     border-bottom: 1px solid var(--line-dark);
   }
@@ -58,7 +77,29 @@ const year = 2026; // build-time constant; bump on rebuild
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
   }
-  .site-footer__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+  .site-footer__broker { margin-top: 1.75rem; }
+  .site-footer__broker-label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 0.5rem;
+  }
+  .site-footer__broker-logo {
+    height: 26px;
+    width: auto;
+    /* black wordmark → white for the dark footer */
+    filter: invert(1);
+    opacity: 0.9;
+  }
+
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
   .site-footer__col { display: flex; flex-direction: column; gap: 0.7rem; }
   .site-footer__col h4 {
     font-family: var(--font-body);
@@ -73,6 +114,7 @@ const year = 2026; // build-time constant; bump on rebuild
     color: rgba(255, 255, 255, 0.82);
     font-size: 0.95rem;
     transition: color 0.25s var(--ease);
+    word-break: break-word;
   }
   .site-footer__col a:hover { color: #fff; }
   .site-footer__text { color: #fff !important; font-weight: 600; }
@@ -80,6 +122,19 @@ const year = 2026; // build-time constant; bump on rebuild
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.5);
     margin: 0.4rem 0 0;
+  }
+  .site-footer__broker-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .site-footer__address {
+    font-style: normal;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0;
   }
   .site-footer__legal {
     display: flex;
@@ -91,7 +146,10 @@ const year = 2026; // build-time constant; bump on rebuild
     color: rgba(255, 255, 255, 0.42);
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 860px) {
     .site-footer__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 560px) {
+    .site-footer__cols { grid-template-columns: 1fr; gap: 2rem; }
   }
 </style>
