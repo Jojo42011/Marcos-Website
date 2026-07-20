@@ -22,9 +22,9 @@ export const mailtoHref = (address: string) => `mailto:${address}`;
 // address, and contact info. Marco is brokered by eXp Realty.
 export const OFFICE = {
   brokerage: 'eXp Realty',
-  addressLine1: '300 North Main Avenue',
-  addressLine2: 'San Antonio, TX 78205',
-  address: '300 North Main Avenue, San Antonio, TX 78205',
+  addressLine1: '17806 W IH 10, Ste. 300',
+  addressLine2: 'San Antonio, TX 78257',
+  address: '17806 W IH 10, Ste. 300, San Antonio, TX 78257',
   email: 'marco.puga@exprealty.com',
   phone: '12108012380',        // E.164 without '+'
   phoneDisplay: '(210) 801-2380',
