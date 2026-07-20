@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import { SMS_DISPLAY, BRAND } from '../config';
+
+// SMS opt-in consent page. Built for A2P / toll-free messaging verification:
+// a real opt-in form with a mobile number field and an unchecked consent
+// checkbox whose label carries all the required disclosures (brand, message
+// types, rates, frequency, HELP/STOP, and a Privacy Policy link).
+//
+// The Privacy Policy link points at Marco's messaging privacy policy (Quo).
+const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
+---
+<Base
+  title={`Text Message Consent | ${BRAND.name} Real Estate`}
+  description="Opt in to receive text updates from Marco Puga Real Estate: property information, home breakdowns, and appointment reminders."
+  solidHeader={true}
+>
+  <section class="smsc">
+    <div class="container container--tight">
+      <p class="label">Text message updates</p>
+      <h1 class="smsc__title">Get Text Updates From Marco</h1>
+      <p class="smsc__lead">
+        Sign up to receive property information, home breakdowns, and appointment reminders by
+        text. Enter your mobile number, check the box to confirm you consent, and you are set.
+      </p>
+
+      <form class="smsc__form" data-smsc novalidate>
+        <div class="smsc__grid">
+          <label class="smsc__field">
+            <span>Your name <em>optional</em></span>
+            <input type="text" name="name" autocomplete="name" placeholder="First and last" />
+          </label>
+          <label class="smsc__field">
+            <span>Mobile number</span>
+            <input type="tel" name="contact" autocomplete="tel" inputmode="tel" placeholder="(830) 000-0000" required />
+          </label>
+        </div>
+
+        <!-- Consent checkbox: unchecked by default, required. The label holds
+             all eight disclosure elements. -->
+        <label class="smsc__consent">
+          <input type="checkbox" name="smsConsent" value="yes" required />
+          <span class="smsc__consent-text">
+            I would like to receive updates by text. We&rsquo;ll be sending you property
+            information, home breakdowns, and appointment reminders from {BRAND.name} Real Estate.
+            Message and data rates may apply. Message frequency varies. At any time you can text
+            HELP for help or STOP to opt out.
+            <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+          </span>
+        </label>
+
+        <!-- honeypot: hidden from humans -->
+        <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
+          <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
+        <button type="submit" class="smsc__submit" data-submit>Sign Me Up</button>
+
+        <div class="smsc__done" data-done hidden>
+          <div class="smsc__done-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
+          </div>
+          <h2>You are signed up.</h2>
+          <p>Thanks for opting in. You can reply STOP at any time to opt out, or HELP for help.</p>
+        </div>
+
+        <p class="smsc__error" data-error hidden role="alert"></p>
+      </form>
+
+      <!-- Plain-text restatement of the terms, for clarity and verification. -->
+      <div class="smsc__terms">
+        <h2>The details</h2>
+        <ul>
+          <li><strong>Who is messaging you:</strong> {BRAND.name} Real Estate.</li>
+          <li><strong>What you will receive:</strong> property information, home breakdowns, and appointment reminders.</li>
+          <li><strong>Message frequency</strong> varies.</li>
+          <li><strong>Message and data rates</strong> may apply.</li>
+          <li><strong>Help:</strong> reply HELP at any time, or reach Marco at {SMS_DISPLAY}.</li>
+          <li><strong>Opt out:</strong> reply STOP at any time to stop receiving messages.</li>
+          <li><strong>Privacy:</strong> your information is never sold or shared with third parties for their marketing. See our <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .smsc {
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .smsc__title { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+  .smsc__lead { color: var(--muted); font-size: var(--step-1); max-width: 60ch; margin-bottom: 2.5rem; }
+
+  .smsc__form {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+  }
+  .smsc__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .smsc__field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .smsc__field > span { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+  .smsc__field > span em { font-style: normal; color: var(--muted); font-weight: 500; }
+  .smsc__field input {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--ink);
+  }
+  .smsc__field input:focus { border-color: var(--crimson); outline: none; }
+
+  .smsc__consent {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    align-items: start;
+    padding: 1.25rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--gray-light);
+    cursor: pointer;
+  }
+  .smsc__consent input {
+    width: 22px; height: 22px;
+    margin: 0;
+    accent-color: var(--crimson);
+    flex: none;
+    cursor: pointer;
+  }
+  .smsc__consent-text { font-size: 0.92rem; line-height: 1.6; color: var(--ink); }
+  .smsc__consent-text a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+
+  .smsc__submit {
+    width: 100%;
+    margin-top: 1.5rem;
+    background: var(--crimson); color: #fff;
+    border: 0; border-radius: var(--radius);
+    padding: 1.05rem 1.7rem;
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s var(--ease);
+  }
+  .smsc__submit:hover { background: var(--crimson-hover); }
+
+  .smsc__done { text-align: center; padding: 1rem 0 0.25rem; }
+  .smsc__done-mark {
+    width: 56px; height: 56px; margin: 0.5rem auto 1rem;
+    display: grid; place-items: center;
+    background: var(--crimson); color: #fff; border-radius: 50%;
+  }
+  .smsc__done h2 { font-size: var(--step-2); }
+  .smsc__done p { color: var(--muted); max-width: 44ch; margin-inline: auto; }
+  .smsc__error {
+    margin: 1rem 0 0; padding: 0.85rem 1rem;
+    background: rgba(153,0,0,0.06); border: 1px solid rgba(153,0,0,0.25);
+    border-radius: var(--radius); color: var(--crimson); font-size: 0.9rem; font-weight: 500;
+  }
+
+  .smsc__terms { margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+  .smsc__terms h2 { font-size: var(--step-1); margin-bottom: 1rem; }
+  .smsc__terms ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.6rem; color: var(--muted); }
+  .smsc__terms li { line-height: 1.55; }
+  .smsc__terms strong { color: var(--ink); font-weight: 600; }
+  .smsc__terms a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+
+  @media (max-width: 520px) {
+    .smsc__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('[data-smsc]') as HTMLFormElement | null;
+  if (form) {
+    const submitBtn = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const doneEl = form.querySelector<HTMLElement>('[data-done]');
+    const errEl = form.querySelector<HTMLElement>('[data-error]');
+
+    const showErr = (msg: string) => { if (errEl) { errEl.textContent = msg; errEl.hidden = false; } };
+    const clearErr = () => { if (errEl) errEl.hidden = true; };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErr();
+      const contact = (form.elements.namedItem('contact') as HTMLInputElement)?.value.trim();
+      const consent = (form.elements.namedItem('smsConsent') as HTMLInputElement)?.checked;
+      if (!contact) { showErr('Enter the mobile number where you would like to receive texts.'); return; }
+      if (!consent) { showErr('Please check the box to confirm you consent to receive text messages.'); return; }
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing you up…'; }
+
+      // Reuse the lead endpoint. intent/reason give Marco context on the opt-in.
+      const body = new FormData(form);
+      body.set('intent', 'SMS updates');
+      body.set('reason', 'Opted in to SMS text updates via the consent page.');
+      try {
+        const res = await fetch('/api/lead', { method: 'POST', body });
+        const out = await res.json().catch(() => ({ ok: false }));
+        if (!res.ok || !out.ok) throw new Error(out.error || 'Failed');
+        form.querySelectorAll('.smsc__grid, .smsc__consent, .smsc__submit').forEach((el) => (el as HTMLElement).hidden = true);
+        if (doneEl) doneEl.hidden = false;
+      } catch (err) {
+        showErr(err instanceof Error && err.message !== 'Failed' ? err.message
+          : "Couldn't submit that. Please try again, or text Marco directly.");
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign Me Up'; }
+      }
+    });
+  }
+</script>
