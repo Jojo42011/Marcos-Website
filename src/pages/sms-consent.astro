@@ -36,8 +36,14 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
           </label>
         </div>
 
+        <!-- honeypot: hidden from humans -->
+        <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
+          <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
         <!-- Consent checkbox: unchecked by default, required. The label holds
-             all eight disclosure elements. -->
+             all eight disclosure elements. Placed directly above the submit
+             button so the opt-in and the action read as one step. -->
         <label class="smsc__consent">
           <input type="checkbox" name="smsConsent" value="yes" required />
           <span class="smsc__consent-text">
@@ -48,11 +54,6 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
             <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">Privacy Policy</a>
           </span>
         </label>
-
-        <!-- honeypot: hidden from humans -->
-        <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
-          <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
-        </div>
 
         <button type="submit" class="smsc__submit" data-submit>Sign Me Up</button>
 
@@ -138,7 +139,7 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
 
   .smsc__submit {
     width: 100%;
-    margin-top: 1.5rem;
+    margin-top: 0.85rem;
     background: var(--crimson); color: #fff;
     border: 0; border-radius: var(--radius);
     padding: 1.05rem 1.7rem;
