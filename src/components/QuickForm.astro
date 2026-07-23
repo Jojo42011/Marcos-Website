@@ -35,6 +35,15 @@ import { smsHref } from '../config';
     <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
   </div>
 
+  <!-- SMS consent disclosure. Sits directly above the submit button because
+       this form can collect a phone number in the "contact" field. -->
+  <p class="qform__consent">
+    By submitting your number, you consent to receive text messages from Marco Puga Real
+    Estate. We&rsquo;ll send property info, home breakdowns, and appointment reminders.
+    Message and data rates may apply. Message frequency varies. Reply STOP to opt out or
+    HELP for help. Privacy Policy: <a href="/sms-consent">marcopuga.com/sms-consent</a>
+  </p>
+
   <button type="submit" class="qform__submit" data-submit>Send to Marco</button>
   <p class="qform__fine">I reply fast, usually within the hour.</p>
 
@@ -103,9 +112,17 @@ import { smsHref } from '../config';
   }
   .qseg__opt:has(input:focus-visible) { outline: 3px solid var(--crimson); outline-offset: 2px; }
 
+  .qform__consent {
+    margin: 0 0 0.85rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .qform__consent a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+
   .qform__submit {
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 0;
     background: var(--crimson); color: #fff;
     border: 0; border-radius: var(--radius);
     padding: 1.05rem 1.7rem;
@@ -170,7 +187,7 @@ import { smsHref } from '../config';
         const res = await fetch('/api/lead', { method: 'POST', body: new FormData(form) });
         const out = await res.json().catch(() => ({ ok: false }));
         if (!res.ok || !out.ok) throw new Error(out.error || 'Failed');
-        form.querySelectorAll('.qfield, .qform__grid, .qform__submit, .qform__fine').forEach((el) => (el as HTMLElement).hidden = true);
+        form.querySelectorAll('.qfield, .qform__grid, .qform__consent, .qform__submit, .qform__fine').forEach((el) => (el as HTMLElement).hidden = true);
         if (doneEl) doneEl.hidden = false;
       } catch (err) {
         showErr(err instanceof Error && err.message !== 'Failed' ? err.message
