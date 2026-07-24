@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import QuickForm from '../components/QuickForm.astro';
-import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from '../config';
+import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, MARCO_PHONE, MARCO_PHONE_DISPLAY, OFFICE, telHref, BRAND } from '../config';
 ---
 <Base
   title={`Contact | ${BRAND.name} Real Estate`}
@@ -27,6 +27,11 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
           </span>
         </a>
 
+        <p class="contact__call">
+          Prefer to call? Reach Marco directly at
+          <a href={telHref(MARCO_PHONE)}>{MARCO_PHONE_DISPLAY}</a>.
+        </p>
+
         <ul class="contact__promises">
           <li><span>⚡</span> I reply fast, usually within the hour.</li>
           <li><span>🤝</span> No pressure and no sales pitch, just straight answers.</li>
@@ -50,7 +55,7 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
         <address>{OFFICE.brokerage}, {OFFICE.addressLine1}, {OFFICE.addressLine2}</address>
       </div>
       <div class="contact__office-item">
-        <span class="contact__office-label">Office phone</span>
+        <span class="contact__office-label">Brokerage office</span>
         <a href={telHref(OFFICE.phone)}>{OFFICE.phoneDisplay}</a>
       </div>
       <div class="contact__office-item">
@@ -89,6 +94,19 @@ import { smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from 
   .contact__text-cta svg { color: #ff6b6b; flex: none; }
   .contact__text-cta strong { display: block; font-size: 1.05rem; }
   .contact__text-cta em { font-style: normal; color: rgba(255,255,255,0.65); font-size: 0.9rem; }
+
+  .contact__call {
+    margin: 0 0 1.75rem;
+    color: var(--muted);
+    font-size: var(--step-1);
+  }
+  .contact__call a {
+    color: var(--ink);
+    font-weight: 600;
+    border-bottom: 1px solid var(--crimson);
+    transition: color 0.2s var(--ease);
+  }
+  .contact__call a:hover { color: var(--crimson); }
 
   .contact__promises { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
   .contact__promises li { display: flex; align-items: center; gap: 0.75rem; color: var(--ink); font-weight: 500; }
