@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { NAV, smsHref, SMS_DISPLAY, EMAIL, mailtoHref, OFFICE, telHref, BRAND } from '../config';
+import { NAV, smsHref, SMS_DISPLAY, EMAIL, mailtoHref, MARCO_PHONE, MARCO_PHONE_DISPLAY, OFFICE, telHref, BRAND } from '../config';
 const year = 2026; // build-time constant; bump on rebuild
 ---
 <footer class="site-footer">
@@ -27,6 +27,7 @@ const year = 2026; // build-time constant; bump on rebuild
       <div class="site-footer__col">
         <h4>Reach Marco</h4>
         <a href={smsHref()} class="site-footer__text">Text {SMS_DISPLAY}</a>
+        <a href={telHref(MARCO_PHONE)}>Call {MARCO_PHONE_DISPLAY}</a>
         <a href={mailtoHref(EMAIL)}>{EMAIL}</a>
         <a href="/contact">Book a call</a>
         <p class="site-footer__note">I reply fast, usually within the hour.</p>
