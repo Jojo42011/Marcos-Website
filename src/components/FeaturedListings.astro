@@ -1,45 +1,27 @@
 ---
-// Featured Listings — a hand-maintained carousel of current homes.
-// Swipe/scroll on touch, arrow buttons on desktop. Each card carries a photo,
-// a price/address/specs overlay, and a "View" button that deep-links to the
-// full listing (Marco's live Brivity page, Zillow, wherever it lives).
+import Button from './Button.astro';
+
+// Featured Listings — live from the MLS (SimplyRETS / SABOR feed).
 //
-// Why hand-maintained and not an MLS/IDX embed: showing other brokers' live
-// listings requires an IDX license from the MLS — a legal permission, not a
-// technical one. A curated set like this needs no approval, reads the most
-// premium, and can be swapped for a live IDX/RESO feed later with no layout
-// change.
-//
-// SWAP POINT: add a photo to /public/photos/ and set `src` on each listing,
-// and point `href` at that home's live detail page.
-export interface Listing {
-  price: string;
-  address: string;
-  specs: string;
-  href: string;
-  src?: string;
-}
+// The homepage stays prerendered and instant: the section server-renders a
+// row of dark placeholder cards, then a small script fetches /api/listings
+// (CDN-cached JSON) and fills them in — Marco's own listings first, topped up
+// with fresh premium San Antonio area homes. If the feed is unreachable the
+// whole section quietly hides, so nothing ever looks broken.
 interface Props {
-  listings?: Listing[];
   heading?: string;
   eyebrow?: string;
   blurb?: string;
 }
 const {
-  listings = [
-    { price: '$459,900', address: '448 Turning Stone, Cibolo, TX 78108', specs: '4 bd · 3 ba · 2,244 sqft', href: '#', src: '/photos/listing-1.jpg' },
-    { price: '$349,995', address: '10426 Sun Ml, San Antonio, TX 78254', specs: '5 bd · 2.5 ba · 2,513 sqft', href: '#', src: '/photos/listing-2.jpg' },
-    { price: '$195,000', address: '305 Toepperwein Rd, Converse, TX 78109', specs: '3 bd · 2 ba · 1,970 sqft', href: '#', src: '/photos/listing-3.jpg' },
-    { price: '$1,000,000', address: 'Luxury single family, Texas', specs: '4 bd · 3.5 ba · 3,600 sqft', href: '#', src: '/photos/listing-4.jpg' },
-    { price: '$1,250,000', address: 'Waterfront condo, Miami, FL', specs: '3 bd · 3 ba · 2,100 sqft', href: '#', src: '/photos/listing-5.jpg' },
-    { price: '$675,000', address: 'New construction, Hill Country', specs: '4 bd · 3 ba · 2,850 sqft', href: '#', src: '/photos/listing-6.jpg' },
-  ],
   heading = 'Homes On The Market Now.',
   eyebrow = 'Featured listings',
-  blurb = 'A curated look at current listings across Texas and Miami. Swipe through, then tap any home for the full details.',
+  blurb = 'Live from the MLS. Marco’s own listings plus fresh homes across the San Antonio area, updated throughout the day.',
 } = Astro.props;
+
+const CARD_COUNT = 10;
 ---
-<section class="listings section" aria-labelledby="listings-h" data-listings>
+<section class="listings section" aria-labelledby="listings-h" data-listings hidden>
   <span class="wm" aria-hidden="true">HOMES</span>
   <div class="container listings__container">
     <div class="listings__head" data-reveal>
@@ -60,22 +42,26 @@ const {
   </div>
 
   <div class="listings__track" data-listings-track>
-    {listings.map((l, i) => (
-      <article class="lcard" data-reveal style={`--i:${i}`}>
-        {l.src ? (
-          <img class="lcard__img" src={l.src} alt={l.address} loading="lazy" />
-        ) : (
-          <div class="lcard__ph" aria-hidden="true"><span>Marco Puga</span></div>
-        )}
+    {Array.from({ length: CARD_COUNT }).map((_, i) => (
+      <article class="lcard" data-reveal data-lcard style={`--i:${i}`}>
+        <div class="lcard__ph" aria-hidden="true"><span>Marco Puga</span></div>
+        <img class="lcard__img" alt="" loading="lazy" decoding="async" hidden />
         <div class="lcard__scrim" aria-hidden="true"></div>
+        <span class="lcard__badge" data-badge hidden></span>
         <div class="lcard__meta">
-          <p class="lcard__price">{l.price}</p>
-          <p class="lcard__addr">{l.address}</p>
-          <p class="lcard__specs">{l.specs}</p>
+          <p class="lcard__price" data-price></p>
+          <p class="lcard__addr" data-addr></p>
+          <p class="lcard__specs" data-specs></p>
+          <p class="lcard__mls" data-office></p>
         </div>
-        <a class="lcard__view" href={l.href} target="_blank" rel="noopener">View</a>
+        <a class="lcard__cover" data-cover href="/listings" tabindex="-1" aria-hidden="true"></a>
+        <a class="lcard__view" data-view href="/listings">View</a>
       </article>
     ))}
+  </div>
+
+  <div class="container listings__all" data-reveal>
+    <Button href="/listings" variant="outline">View All Listings</Button>
   </div>
 </section>
 
@@ -142,6 +128,8 @@ const {
     width: 100%; height: 100%;
     object-fit: cover;
   }
+  .lcard__img { opacity: 0; transition: opacity 0.6s var(--ease); }
+  .lcard__img.is-loaded { opacity: 1; }
   .lcard__ph {
     display: grid; place-items: center;
     background: radial-gradient(120% 100% at 30% 0%, #1a1a1d 0%, #050506 70%);
@@ -166,6 +154,22 @@ const {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 32%, transparent 62%);
     pointer-events: none;
   }
+  .lcard__badge {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    z-index: 2;
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--crimson);
+    border-radius: 2px;
+    padding: 0.4rem 0.7rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+  }
+  .lcard__badge--new { background: rgba(11, 11, 12, 0.82); }
   .lcard__meta {
     position: absolute;
     left: 0; right: 0; bottom: 0;
@@ -194,9 +198,18 @@ const {
     margin: 0;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
   }
+  .lcard__mls {
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.45rem 0 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  }
+  .lcard__cover { position: absolute; inset: 0; z-index: 1; }
   .lcard__view {
     position: absolute;
     right: 1.1rem; bottom: 1.2rem;
+    z-index: 2;
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.9rem;
@@ -209,11 +222,17 @@ const {
     transition: background 0.25s var(--ease);
   }
   .lcard__view:hover { background: var(--crimson-hover); }
+
+  .listings__all {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
 </style>
 
 <script>
-  // Arrow nav: scroll the track by one card + gap. Touch/trackpad users just
-  // swipe the overflow-scroll track directly.
+  // 1) Arrow nav: scroll the track by one card + gap. Touch/trackpad users
+  //    just swipe the overflow-scroll track directly.
   document.querySelectorAll<HTMLElement>('[data-listings]').forEach((section) => {
     const track = section.querySelector<HTMLElement>('[data-listings-track]');
     if (!track) return;
@@ -227,4 +246,70 @@ const {
     section.querySelector('[data-listings-prev]')?.addEventListener('click', () => scrollByCard(-1));
     section.querySelector('[data-listings-next]')?.addEventListener('click', () => scrollByCard(1));
   });
+
+  // 2) Fill the placeholder cards with live MLS data. The section starts
+  //    hidden and only appears once real listings are in hand.
+  interface FeaturedCard {
+    mlsId: number;
+    price: string;
+    address: string;
+    specs: string;
+    photo: string | null;
+    href: string;
+    isMarco: boolean;
+    isNew: boolean;
+    office: string | null;
+  }
+
+  (async () => {
+    const section = document.querySelector<HTMLElement>('[data-listings]');
+    if (!section) return;
+    try {
+      const res = await fetch('/api/listings');
+      if (!res.ok) throw new Error(String(res.status));
+      const data: { ok: boolean; listings?: FeaturedCard[] } = await res.json();
+      const listings = data.ok && data.listings ? data.listings.filter((l) => l.photo) : [];
+      if (!listings.length) return; // stays hidden
+
+      const cards = Array.from(section.querySelectorAll<HTMLElement>('[data-lcard]'));
+      cards.forEach((card, i) => {
+        const l = listings[i];
+        if (!l) { card.remove(); return; }
+
+        const img = card.querySelector<HTMLImageElement>('.lcard__img');
+        if (img && l.photo) {
+          img.src = l.photo;
+          img.alt = l.address;
+          img.hidden = false;
+          img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+        }
+        const set = (sel: string, text: string) => {
+          const el = card.querySelector<HTMLElement>(sel);
+          if (el) el.textContent = text;
+        };
+        set('[data-price]', l.price);
+        set('[data-addr]', l.address);
+        set('[data-specs]', l.specs);
+        set('[data-office]', l.isMarco ? 'Listed by Marco Puga, eXp Realty' : (l.office ? `Courtesy of ${l.office}` : ''));
+
+        const badge = card.querySelector<HTMLElement>('[data-badge]');
+        if (badge && (l.isMarco || l.isNew)) {
+          badge.textContent = l.isMarco ? 'Marco’s Listing' : 'New';
+          badge.classList.toggle('lcard__badge--new', !l.isMarco);
+          badge.hidden = false;
+        }
+        card.querySelectorAll<HTMLAnchorElement>('[data-view], [data-cover]').forEach((a) => {
+          a.href = l.href;
+        });
+        const view = card.querySelector<HTMLAnchorElement>('[data-view]');
+        if (view) view.setAttribute('aria-label', `View ${l.address}`);
+      });
+
+      section.hidden = false;
+      // Cards render inside an already-observed page: re-trigger reveal.
+      section.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+    } catch {
+      /* feed unavailable — section stays hidden, page looks intentional */
+    }
+  })();
 </script>

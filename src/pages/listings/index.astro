@@ -1,0 +1,441 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Button from '../../components/Button.astro';
+import ListingCard from '../../components/ListingCard.astro';
+import { smsHref, BRAND } from '../../config';
+import {
+  hasMlsCredentials,
+  searchProperties,
+  getMarcoListings,
+  type MlsListing,
+} from '../../lib/simplyrets';
+
+// Live MLS search — server-rendered on every request, cached at the CDN for
+// 15 minutes so the feed stays fresh without hammering the API.
+export const prerender = false;
+
+const PER_PAGE = 24;
+
+const CITIES = [
+  'San Antonio', 'New Braunfels', 'Boerne', 'Schertz', 'Cibolo', 'Converse',
+  'Helotes', 'Bulverde', 'Spring Branch', 'Canyon Lake', 'Seguin',
+  'Floresville', 'Castroville', 'Bandera',
+];
+
+const PRICES = [100000, 200000, 300000, 400000, 500000, 750000, 1000000, 1500000, 2000000];
+const fmtShort = (n: number) => (n >= 1000000 ? `$${n / 1000000}M` : `$${n / 1000}k`);
+
+// --- read + sanitize query params ------------------------------------------
+const url = Astro.url;
+const qp = url.searchParams;
+
+const q = (qp.get('q') ?? '').trim().slice(0, 80);
+const city = CITIES.includes(qp.get('city') ?? '') ? qp.get('city')! : '';
+const minprice = PRICES.includes(Number(qp.get('minprice'))) ? Number(qp.get('minprice')) : 0;
+const maxprice = PRICES.includes(Number(qp.get('maxprice'))) ? Number(qp.get('maxprice')) : 0;
+const beds = [2, 3, 4, 5].includes(Number(qp.get('beds'))) ? Number(qp.get('beds')) : 0;
+const type = ['homes', 'condos', 'rentals'].includes(qp.get('type') ?? '') ? qp.get('type')! : 'all';
+const sort = ['newest', 'pricehigh', 'pricelow'].includes(qp.get('sort') ?? '') ? qp.get('sort')! : 'newest';
+const page = Math.min(Math.max(parseInt(qp.get('page') ?? '1', 10) || 1, 1), 200);
+
+const hasFilters = Boolean(q || city || minprice || maxprice || beds || type !== 'all' || sort !== 'newest');
+
+const TYPE_MAP: Record<string, string[]> = {
+  all: ['residential', 'condominium'],
+  homes: ['residential'],
+  condos: ['condominium'],
+  rentals: ['rental'],
+};
+const SORT_MAP: Record<string, string> = {
+  newest: '-listdate',
+  pricehigh: '-listprice',
+  pricelow: 'listprice',
+};
+
+// --- fetch -------------------------------------------------------------------
+const env = import.meta.env as unknown as Record<string, string | undefined>;
+const configured = hasMlsCredentials(env);
+
+let listings: MlsListing[] = [];
+let total: number | null = null;
+let lastUpdate: string | null = null;
+let marcoListings: MlsListing[] = [];
+let feedError = false;
+
+if (configured) {
+  try {
+    const result = await searchProperties(env, {
+      q: q || undefined,
+      cities: city ? [city] : undefined,
+      minprice: minprice || undefined,
+      maxprice: maxprice || undefined,
+      minbeds: beds || undefined,
+      types: TYPE_MAP[type],
+      sort: SORT_MAP[sort],
+      limit: PER_PAGE,
+      offset: (page - 1) * PER_PAGE,
+      count: true,
+    });
+    listings = result.listings;
+    total = result.total;
+    lastUpdate = result.lastUpdate;
+
+    // Marco's own listings lead the default view.
+    if (!hasFilters && page === 1) {
+      try {
+        marcoListings = (await getMarcoListings(env)).filter((l) => l.photos.length > 0);
+      } catch { /* strip is optional; the main grid still renders */ }
+    }
+  } catch (err) {
+    console.error('[listings page] feed failed:', err);
+    feedError = true;
+  }
+} else {
+  feedError = true;
+}
+
+const totalPages = total ? Math.max(Math.ceil(total / PER_PAGE), 1) : null;
+const showingFrom = (page - 1) * PER_PAGE + 1;
+const showingTo = (page - 1) * PER_PAGE + listings.length;
+
+function pageHref(p: number): string {
+  const next = new URLSearchParams(qp);
+  if (p <= 1) next.delete('page'); else next.set('page', String(p));
+  const s = next.toString();
+  return `/listings${s ? `?${s}` : ''}`;
+}
+
+const updatedDisplay = lastUpdate
+  ? new Date(lastUpdate).toLocaleString('en-US', {
+      month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
+      timeZone: 'America/Chicago', timeZoneName: 'short',
+    })
+  : null;
+
+// CDN cache: fresh for 15 minutes, then refresh in the background.
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=900, stale-while-revalidate=3600');
+---
+<Base
+  title={`Listings | ${BRAND.name} Real Estate`}
+  description="Search live MLS listings across San Antonio and the surrounding Texas Hill Country. Updated throughout the day, straight from the San Antonio Board of REALTORS."
+>
+  <PageHero
+    eyebrow="Live from the MLS"
+    title="Every Home On The Market."
+    blurb="Search live listings across San Antonio and the Hill Country, updated throughout the day. See one you like? Text Marco and he will get you inside."
+    watermark="LISTINGS"
+  />
+
+  <!-- SEARCH / FILTER BAR -->
+  <section class="lsearch" aria-label="Search listings">
+    <div class="container">
+      <form class="lsearch__form" method="get" action="/listings" data-lsearch>
+        <label class="lsearch__field lsearch__field--q">
+          <span>Search</span>
+          <input type="search" name="q" value={q} placeholder="Address, ZIP, or MLS number" />
+        </label>
+        <label class="lsearch__field">
+          <span>Area</span>
+          <select name="city">
+            <option value="">All areas</option>
+            {CITIES.map((c) => <option value={c} selected={c === city}>{c}</option>)}
+          </select>
+        </label>
+        <label class="lsearch__field">
+          <span>Min price</span>
+          <select name="minprice">
+            <option value="">No min</option>
+            {PRICES.slice(0, -1).map((p) => <option value={p} selected={p === minprice}>{fmtShort(p)}</option>)}
+          </select>
+        </label>
+        <label class="lsearch__field">
+          <span>Max price</span>
+          <select name="maxprice">
+            <option value="">No max</option>
+            {PRICES.slice(1).map((p) => <option value={p} selected={p === maxprice}>{fmtShort(p)}</option>)}
+          </select>
+        </label>
+        <label class="lsearch__field">
+          <span>Beds</span>
+          <select name="beds">
+            <option value="">Any</option>
+            {[2, 3, 4, 5].map((b) => <option value={b} selected={b === beds}>{b}+</option>)}
+          </select>
+        </label>
+        <label class="lsearch__field">
+          <span>Type</span>
+          <select name="type">
+            <option value="all" selected={type === 'all'}>Homes and condos</option>
+            <option value="homes" selected={type === 'homes'}>Houses</option>
+            <option value="condos" selected={type === 'condos'}>Condos and townhomes</option>
+            <option value="rentals" selected={type === 'rentals'}>For rent</option>
+          </select>
+        </label>
+        <label class="lsearch__field">
+          <span>Sort</span>
+          <select name="sort">
+            <option value="newest" selected={sort === 'newest'}>Newest</option>
+            <option value="pricehigh" selected={sort === 'pricehigh'}>Price high to low</option>
+            <option value="pricelow" selected={sort === 'pricelow'}>Price low to high</option>
+          </select>
+        </label>
+        <button type="submit" class="lsearch__submit">Search</button>
+      </form>
+    </div>
+  </section>
+
+  {feedError ? (
+    <!-- FEED DOWN / NOT CONFIGURED — honest, useful, on brand -->
+    <section class="section lempty">
+      <div class="container container--tight lempty__inner">
+        <h2>The live feed is catching its breath.</h2>
+        <p>Listings update straight from the MLS and will be back shortly. In the meantime, tell Marco what you are looking for and he will send you real options today.</p>
+        <Button href={smsHref('Hi Marco, I was browsing listings on your site. Here is what I am looking for: ')} variant="primary" dataSms={true}>Text Marco</Button>
+      </div>
+    </section>
+  ) : (
+    <>
+      {marcoListings.length > 0 && (
+        <section class="section lmarco" aria-labelledby="lmarco-h">
+          <div class="container">
+            <div class="lmarco__head" data-reveal>
+              <p class="label">Represented by Marco</p>
+              <h2 id="lmarco-h">Marco’s Listings.</h2>
+            </div>
+            <div class="lgrid">
+              {marcoListings.map((l, i) => <ListingCard listing={l} index={i} eager={i < 3} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section class={`section lresults${marcoListings.length ? ' lresults--after' : ''}`} aria-labelledby="lresults-h">
+        <div class="container">
+          <div class="lresults__head" data-reveal>
+            <div>
+              <p class="label">{hasFilters ? 'Your search' : 'On the market'}</p>
+              <h2 id="lresults-h">{hasFilters ? 'Matching Homes.' : 'Just Listed.'}</h2>
+            </div>
+            {total != null && listings.length > 0 && (
+              <p class="lresults__count">
+                Showing {showingFrom.toLocaleString('en-US')} to {showingTo.toLocaleString('en-US')} of {total.toLocaleString('en-US')} listings
+              </p>
+            )}
+          </div>
+
+          {listings.length === 0 ? (
+            <div class="lempty__inner lempty__inner--inline" data-reveal>
+              <h3>No homes match that search.</h3>
+              <p>Loosen a filter or two, or just tell Marco what you want. He sees homes before they hit the portals.</p>
+              <Button href={smsHref('Hi Marco, I am searching for a home. Here is what I want: ')} variant="primary" dataSms={true}>Text Marco</Button>
+            </div>
+          ) : (
+            <div class="lgrid">
+              {listings.map((l, i) => <ListingCard listing={l} index={i} eager={!marcoListings.length && i < 3} />)}
+            </div>
+          )}
+
+          {totalPages != null && totalPages > 1 && (
+            <nav class="lpager" aria-label="Listings pages">
+              {page > 1 ? (
+                <a class="lpager__btn" href={pageHref(page - 1)} rel="prev">Previous</a>
+              ) : (
+                <span class="lpager__btn lpager__btn--off" aria-hidden="true">Previous</span>
+              )}
+              <span class="lpager__where">Page {page.toLocaleString('en-US')} of {totalPages.toLocaleString('en-US')}</span>
+              {page < totalPages ? (
+                <a class="lpager__btn" href={pageHref(page + 1)} rel="next">Next</a>
+              ) : (
+                <span class="lpager__btn lpager__btn--off" aria-hidden="true">Next</span>
+              )}
+            </nav>
+          )}
+        </div>
+      </section>
+
+      <!-- MIAMI, HANDLED PERSONALLY -->
+      <section class="section lmiami">
+        <div class="container container--tight lmiami__inner" data-reveal>
+          <p class="label label--center label--dark">Looking in Miami?</p>
+          <h2>That Market Is Handled Personally.</h2>
+          <p class="lmiami__text">Miami inventory moves fast and the best of it never sits on a portal. Text Marco what you are looking for and he will pull real options with his partner on the ground.</p>
+          <Button href={smsHref('Hi Marco, I am interested in the Miami market. ')} variant="primary" dataSms={true}>Text Marco About Miami</Button>
+        </div>
+      </section>
+
+      <!-- MLS attribution -->
+      <div class="container lattr">
+        <p>
+          Listing information is provided by the San Antonio Board of REALTORS from the MLS.
+          {updatedDisplay && ` Last updated ${updatedDisplay}.`}
+          This information is believed to be accurate, but without warranty. Properties shown may be
+          listed by brokerages other than eXp Realty; those listings are identified with the listing
+          brokerage on each card.
+        </p>
+      </div>
+    </>
+  )}
+</Base>
+
+<style>
+  /* --- filter bar -------------------------------------------------------- */
+  .lsearch {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+  .lsearch__form {
+    display: grid;
+    grid-template-columns: 2fr repeat(6, 1fr) auto;
+    gap: 0.75rem;
+    align-items: end;
+  }
+  .lsearch__field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+  .lsearch__field > span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lsearch__field input,
+  .lsearch__field select {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.7rem 0.8rem;
+    appearance: none;
+  }
+  .lsearch__field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='14' height='14'%3E%3Cpath fill='none' stroke='%235c6067' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    padding-right: 2rem;
+  }
+  .lsearch__field input:focus,
+  .lsearch__field select:focus { border-color: var(--crimson); outline: none; }
+  .lsearch__submit {
+    background: var(--crimson);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.6rem;
+    cursor: pointer;
+    transition: background 0.3s var(--ease);
+  }
+  .lsearch__submit:hover { background: var(--crimson-hover); }
+
+  /* --- sections ---------------------------------------------------------- */
+  .lmarco { padding-bottom: 0; }
+  .lmarco__head, .lresults__head { margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem); }
+  .lresults__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .lresults__head h2, .lmarco__head h2 { font-size: var(--step-2); margin: 0; }
+  .lresults__count { color: var(--muted); font-size: 0.88rem; margin: 0 0 0.4rem; }
+  .lresults--after { padding-top: clamp(3rem, 6vw, 4.5rem); }
+
+  .lgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  /* --- pager -------------------------------------------------------------- */
+  .lpager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .lpager__btn {
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    padding: 0.8rem 1.5rem;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .lpager__btn:hover { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+  .lpager__btn--off { opacity: 0.35; pointer-events: none; }
+  .lpager__where { color: var(--muted); font-size: 0.85rem; }
+
+  /* --- empty / error states ----------------------------------------------- */
+  .lempty__inner { text-align: center; }
+  .lempty__inner h2 { font-size: var(--step-2); }
+  .lempty__inner h3 { font-size: var(--step-1); }
+  .lempty__inner p {
+    color: var(--muted);
+    max-width: 54ch;
+    margin-inline: auto;
+    margin-bottom: 1.75rem;
+  }
+  .lempty__inner--inline { padding-block: clamp(2rem, 5vw, 3.5rem); }
+
+  /* --- Miami band ---------------------------------------------------------- */
+  .lmiami { background: var(--obsidian); color: #fff; text-align: center; }
+  .lmiami__inner h2 { font-size: var(--step-3); }
+  .lmiami__text {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: var(--step-1);
+    max-width: 56ch;
+    margin-inline: auto;
+    margin-bottom: 2.25rem;
+  }
+
+  /* --- attribution ---------------------------------------------------------- */
+  .lattr { padding-block: 1.5rem clamp(2.5rem, 5vw, 4rem); }
+  .lattr p {
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 88ch;
+    margin: 0;
+  }
+
+  @media (max-width: 1080px) {
+    .lsearch__form { grid-template-columns: repeat(4, 1fr); }
+    .lsearch__field--q { grid-column: 1 / -1; }
+    .lgrid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .lsearch__form { grid-template-columns: 1fr 1fr; }
+    .lsearch__submit { grid-column: 1 / -1; }
+    .lgrid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // Auto-submit when a filter changes — the Search button still works for
+  // keyboard flows and the free text field.
+  const form = document.querySelector<HTMLFormElement>('[data-lsearch]');
+  form?.querySelectorAll('select').forEach((sel) => {
+    sel.addEventListener('change', () => form.requestSubmit());
+  });
+  // Don't carry empty params into the URL — keeps links clean and cacheable.
+  form?.addEventListener('submit', () => {
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((el) => {
+      if (!el.value || (el.name === 'type' && el.value === 'all') || (el.name === 'sort' && el.value === 'newest')) {
+        el.disabled = true;
+      }
+    });
+  });
+</script>

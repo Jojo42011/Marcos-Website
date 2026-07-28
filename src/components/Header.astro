@@ -13,8 +13,8 @@ interface Props {
 }
 const { solid = false } = Astro.props;
 const currentPath = Astro.url.pathname;
-const leftNav = NAV.slice(0, 2);   // Buyers, Sellers
-const rightNav = NAV.slice(2);     // About, Contact
+const leftNav = NAV.slice(0, 3);   // Buyers, Sellers, Listings
+const rightNav = NAV.slice(3);     // About, Contact
 ---
 <header class={`site-header${solid ? ' is-solid' : ''}`} data-header data-solid={solid ? 'true' : undefined}>
   <div class="site-header__inner container">

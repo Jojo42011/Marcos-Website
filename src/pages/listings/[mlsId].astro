@@ -1,0 +1,435 @@
+---
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import { smsHref, MARCO_PHONE, MARCO_PHONE_DISPLAY, telHref, BRAND, OFFICE } from '../../config';
+import { hasMlsCredentials, getProperty, fmtPrice, fmtBaths } from '../../lib/simplyrets';
+
+// Single listing detail — server-rendered from the live MLS feed, CDN-cached.
+export const prerender = false;
+
+const env = import.meta.env as unknown as Record<string, string | undefined>;
+const { mlsId } = Astro.params;
+
+const listing = hasMlsCredentials(env) && mlsId ? await getProperty(env, mlsId) : null;
+
+if (!listing) {
+  return Astro.redirect('/listings', 302);
+}
+
+const MAX_PHOTOS = 60;
+const photos = listing.photos.slice(0, MAX_PHOTOS);
+const price = fmtPrice(listing.price, listing.isRental);
+const baths = fmtBaths(listing);
+const cityLine = `${listing.city}, ${listing.state} ${listing.zip}`;
+const isNew = listing.statusText === 'New' || (listing.daysOnMarket != null && listing.daysOnMarket <= 7);
+const priceImproved =
+  listing.originalPrice != null && listing.price < listing.originalPrice && !listing.isRental;
+
+const facts: Array<{ k: string; v: string }> = [];
+if (listing.beds != null) facts.push({ k: 'Bedrooms', v: String(listing.beds) });
+if (baths) facts.push({ k: 'Bathrooms', v: baths });
+if (listing.sqft) facts.push({ k: 'Square feet', v: listing.sqft.toLocaleString('en-US') });
+if (listing.lotAcres) facts.push({ k: 'Lot', v: `${listing.lotAcres} acres` });
+if (listing.yearBuilt) facts.push({ k: 'Year built', v: String(listing.yearBuilt) });
+if (listing.garageSpaces) facts.push({ k: 'Garage', v: `${listing.garageSpaces} spaces` });
+if (listing.stories) facts.push({ k: 'Stories', v: String(listing.stories) });
+if (listing.daysOnMarket != null) facts.push({ k: 'Days on market', v: String(listing.daysOnMarket) });
+
+const details: Array<{ k: string; v: string }> = [];
+if (listing.subdivision) details.push({ k: 'Subdivision', v: listing.subdivision });
+if (listing.county) details.push({ k: 'County', v: `${listing.county} County` });
+if (listing.schoolDistrict) details.push({ k: 'School district', v: listing.schoolDistrict });
+if (listing.construction.length) details.push({ k: 'Construction', v: listing.construction.join(', ') });
+if (listing.flooring.length) details.push({ k: 'Flooring', v: listing.flooring.join(', ') });
+if (listing.heating) details.push({ k: 'Heating', v: listing.heating });
+if (listing.cooling) details.push({ k: 'Cooling', v: listing.cooling });
+if (listing.hoaFee != null)
+  details.push({ k: 'HOA', v: `$${listing.hoaFee.toLocaleString('en-US')}${listing.hoaFrequency ? ` ${listing.hoaFrequency.toLowerCase()}` : ''}` });
+if (listing.taxAnnual != null)
+  details.push({ k: 'Taxes', v: `$${listing.taxAnnual.toLocaleString('en-US')}${listing.taxYear ? ` (${listing.taxYear})` : ''}` });
+details.push({ k: 'MLS number', v: listing.listingId });
+details.push({ k: 'Status', v: listing.status });
+
+const smsBody = `Hi Marco, I saw ${listing.address}, ${listing.city} (${price}) on your website. `;
+const metaDescription = (listing.remarks ?? `${listing.address} in ${cityLine}.`).slice(0, 200);
+
+// CDN cache: fresh for 15 minutes, then refresh in the background.
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=900, stale-while-revalidate=3600');
+---
+<Base
+  title={`${listing.address}, ${listing.city} | ${price} | ${BRAND.name} Real Estate`}
+  description={metaDescription}
+  solidHeader={true}
+  ogImage={photos[0] ?? '/photos/hero-1.jpg'}
+>
+  <article class="ld">
+    <div class="container">
+      <nav class="ld__crumb" aria-label="Breadcrumb">
+        <a href="/listings">Back to all listings</a>
+      </nav>
+
+      <!-- GALLERY -->
+      {photos.length > 0 && (
+        <section class="ld__gallery" data-gallery aria-label="Property photos">
+          <div class="ld__hero">
+            <img
+              src={photos[0]}
+              alt={`${listing.address}, ${cityLine}`}
+              data-gallery-hero
+              fetchpriority="high"
+              decoding="async"
+            />
+            <div class="ld__hero-tags" aria-hidden="true">
+              {listing.isMarcoListing && <span class="ld__tag">Marco’s Listing</span>}
+              {!listing.isMarcoListing && isNew && <span class="ld__tag ld__tag--dark">New</span>}
+              {priceImproved && <span class="ld__tag ld__tag--dark">Price Improved</span>}
+            </div>
+            {photos.length > 1 && (
+              <p class="ld__count" data-gallery-count aria-live="polite">1 / {photos.length}</p>
+            )}
+          </div>
+          {photos.length > 1 && (
+            <div class="ld__thumbs" data-gallery-thumbs>
+              {photos.map((src, i) => (
+                <button
+                  type="button"
+                  class={`ld__thumb ${i === 0 ? 'is-active' : ''}`}
+                  data-gallery-thumb={i}
+                  aria-label={`Photo ${i + 1} of ${photos.length}`}
+                >
+                  <img src={src} alt="" loading={i < 8 ? 'eager' : 'lazy'} decoding="async" />
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      <!-- SUMMARY + SIDEBAR -->
+      <div class="ld__grid">
+        <div class="ld__main">
+          <header class="ld__head">
+            <p class="ld__price">{price}</p>
+            <h1 class="ld__addr">{listing.address}</h1>
+            <p class="ld__city">{cityLine}</p>
+          </header>
+
+          {facts.length > 0 && (
+            <ul class="ld__facts">
+              {facts.map((f) => (
+                <li><strong>{f.v}</strong><span>{f.k}</span></li>
+              ))}
+            </ul>
+          )}
+
+          {listing.remarks && (
+            <section class="ld__section">
+              <h2>About this home</h2>
+              <p class="ld__remarks">{listing.remarks}</p>
+            </section>
+          )}
+
+          {listing.interiorFeatures.length > 0 && (
+            <section class="ld__section">
+              <h2>Inside</h2>
+              <ul class="ld__chips">
+                {listing.interiorFeatures.map((f) => <li>{f}</li>)}
+              </ul>
+            </section>
+          )}
+
+          {details.length > 0 && (
+            <section class="ld__section">
+              <h2>The details</h2>
+              <dl class="ld__dl">
+                {details.map((d) => (
+                  <div class="ld__dl-row">
+                    <dt>{d.k}</dt>
+                    <dd>{d.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+
+          <p class="ld__courtesy">
+            {listing.isMarcoListing
+              ? `Listed by Marco Puga, ${OFFICE.brokerage}.`
+              : `Listing courtesy of ${listing.officeName ?? 'the listing brokerage'}${listing.agentName ? `, ${listing.agentName}` : ''}.`}
+            {' '}Information from the San Antonio Board of REALTORS, believed accurate but not warranted.
+          </p>
+        </div>
+
+        <!-- SIDEBAR CTA -->
+        <aside class="ld__aside">
+          <div class="ld__card">
+            <p class="ld__card-price">{price}</p>
+            <p class="ld__card-addr">{listing.address}</p>
+            <p class="ld__card-note">
+              {listing.isMarcoListing
+                ? 'This is one of Marco’s own listings. Text him directly for the full story and a private showing.'
+                : 'Marco represents buyers on any home shown here. Get a straight read on this one and a private showing on your schedule.'}
+            </p>
+            <Button href={smsHref(smsBody)} variant="primary" dataSms={true} class="ld__card-btn">Text Marco About This Home</Button>
+            <a class="ld__card-call" href={telHref(MARCO_PHONE)}>Or call {MARCO_PHONE_DISPLAY}</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .ld {
+    padding-top: calc(var(--header-h) + clamp(1.25rem, 3vw, 2rem));
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .ld__crumb { margin-bottom: 1.25rem; }
+  .ld__crumb a {
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.2s var(--ease);
+  }
+  .ld__crumb a:hover { color: var(--crimson); }
+
+  /* --- gallery ------------------------------------------------------------ */
+  .ld__hero {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0b0b0c;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+  }
+  .ld__hero img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .ld__hero-tags {
+    position: absolute;
+    top: 1.1rem; left: 1.1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .ld__tag {
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--crimson);
+    border-radius: 2px;
+    padding: 0.45rem 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .ld__tag--dark { background: rgba(11, 11, 12, 0.82); }
+  .ld__count {
+    position: absolute;
+    right: 1rem; bottom: 0.9rem;
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 2px;
+    padding: 0.35rem 0.7rem;
+  }
+  .ld__thumbs {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.35rem;
+  }
+  .ld__thumbs::-webkit-scrollbar { display: none; }
+  .ld__thumb {
+    flex: 0 0 110px;
+    aspect-ratio: 4 / 3;
+    scroll-snap-align: start;
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    overflow: hidden;
+    padding: 0;
+    background: #0b0b0c;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: opacity 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .ld__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .ld__thumb:hover { opacity: 1; }
+  .ld__thumb.is-active { border-color: var(--crimson); opacity: 1; }
+
+  /* --- layout ------------------------------------------------------------- */
+  .ld__grid {
+    display: grid;
+    grid-template-columns: 1.55fr 0.85fr;
+    gap: clamp(2rem, 4.5vw, 4rem);
+    align-items: start;
+    margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+
+  .ld__head { border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+  .ld__price {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3.1rem);
+    line-height: 1;
+    color: var(--crimson);
+    margin: 0 0 0.6rem;
+  }
+  .ld__addr { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 0 0 0.3rem; }
+  .ld__city { color: var(--muted); font-size: var(--step-0); margin: 0; }
+
+  .ld__facts {
+    list-style: none;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .ld__facts li {
+    border-left: 2px solid var(--crimson);
+    padding-left: 0.85rem;
+    display: grid;
+    gap: 0.1rem;
+  }
+  .ld__facts strong {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+  .ld__facts span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ld__section { margin-bottom: 2rem; }
+  .ld__section h2 { font-size: var(--step-1); margin-bottom: 0.75rem; }
+  .ld__remarks { color: var(--muted); line-height: 1.75; margin: 0; white-space: pre-line; }
+
+  .ld__chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .ld__chips li {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--gray-light);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 0.45rem 0.8rem;
+  }
+
+  .ld__dl { margin: 0; }
+  .ld__dl-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ld__dl-row:first-child { border-top: 1px solid var(--line); }
+  .ld__dl dt {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 0.15rem;
+  }
+  .ld__dl dd { margin: 0; color: var(--ink); font-size: 0.95rem; }
+
+  .ld__courtesy {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+    margin: 2.25rem 0 0;
+  }
+
+  /* --- sidebar -------------------------------------------------------------- */
+  .ld__aside { position: sticky; top: calc(var(--header-h) + 1.25rem); }
+  .ld__card {
+    background: var(--obsidian);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-top: 3px solid var(--crimson);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  }
+  .ld__card-price {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 1;
+    margin: 0 0 0.35rem;
+  }
+  .ld__card-addr { font-weight: 600; font-size: 0.95rem; margin: 0 0 1rem; color: rgba(255,255,255,0.85); }
+  .ld__card-note { color: rgba(255, 255, 255, 0.65); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .ld__card :global(.ld__card-btn) { width: 100%; }
+  .ld__card-call {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color 0.2s var(--ease);
+  }
+  .ld__card-call:hover { color: #fff; }
+
+  @media (max-width: 960px) {
+    .ld__grid { grid-template-columns: 1fr; }
+    .ld__aside { position: static; }
+    .ld__facts { grid-template-columns: repeat(2, 1fr); }
+    .ld__dl-row { grid-template-columns: 130px 1fr; }
+  }
+</style>
+
+<script>
+  // Thumbnail gallery: click (or focus + arrow through) thumbs to swap the
+  // hero image. Plain and fast, no library.
+  const gallery = document.querySelector<HTMLElement>('[data-gallery]');
+  if (gallery) {
+    const hero = gallery.querySelector<HTMLImageElement>('[data-gallery-hero]');
+    const count = gallery.querySelector<HTMLElement>('[data-gallery-count]');
+    const thumbs = Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]'));
+    let active = 0;
+
+    const show = (i: number) => {
+      const btn = thumbs[i];
+      const img = btn?.querySelector('img');
+      if (!hero || !img) return;
+      thumbs[active]?.classList.remove('is-active');
+      active = i;
+      btn.classList.add('is-active');
+      hero.src = img.src;
+      if (count) count.textContent = `${i + 1} / ${thumbs.length}`;
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    };
+
+    thumbs.forEach((btn, i) => btn.addEventListener('click', () => show(i)));
+
+    // Left/right keys page through photos while the gallery has focus.
+    gallery.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(Math.min(active + 1, thumbs.length - 1)); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(Math.max(active - 1, 0)); }
+    });
+  }
+</script>

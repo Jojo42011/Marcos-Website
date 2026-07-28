@@ -46,6 +46,12 @@ export const BRAND = {
 export const NAV = [
   { label: 'Buyers', href: '/buyers' },
   { label: 'Sellers', href: '/sellers' },
+  { label: 'Listings', href: '/listings' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ] as const;
+
+// Marco's listing agent IDs in the SABOR MLS (he has two on file). Used to
+// pull his own listings from the SimplyRETS feed. Not secret — the API
+// credentials live in env vars, never here.
+export const MARCO_MLS_AGENT_IDS = ['151473', '827908'] as const;

@@ -71,6 +71,34 @@ public/
 Site copy never uses a hyphen or an em dash — write "first time buyers",
 "seven figure listing", and use commas or periods instead of dashes.
 
+## Live MLS listings (SimplyRETS)
+
+Listings are live from the MLS via [SimplyRETS](https://docs.simplyrets.com)
+(LERA / SABOR — San Antonio Board of REALTORS feed):
+
+- **Homepage "Featured Listings"** — the static page fetches `/api/listings`
+  (CDN-cached JSON, 15 min) client-side. Marco's own listings lead, topped up
+  with fresh $400k+ San Antonio area homes. If the feed is down the section
+  hides itself — nothing ever looks broken.
+- **`/listings`** — server-rendered live search: keyword/city/price/beds/type
+  filters, pagination, Marco's listings strip, IDX broker attribution, and the
+  MLS disclaimer + last-update stamp. CDN-cached 15 minutes.
+- **`/listings/[mlsId]`** — full detail page: gallery, facts, remarks,
+  features, HOA/taxes/schools, courtesy line, and a "Text Marco about this
+  home" CTA. Unknown IDs redirect to `/listings`.
+- All feed access lives in [`src/lib/simplyrets.ts`](src/lib/simplyrets.ts)
+  (normalization + a 10 min in-memory cache). Marco's SABOR agent IDs live in
+  `src/config.ts` (`MARCO_MLS_AGENT_IDS`).
+
+**Setup:** set `SIMPLYRETS_API_KEY` and `SIMPLYRETS_API_SECRET` (see
+`.env.example`). On Vercel: Project Settings → Environment Variables. Keys are
+server-side only and never reach the browser. Without them the site still
+builds and runs; listings surfaces degrade gracefully.
+
+Note: the feed covers the SABOR (San Antonio) MLS. Miami inventory is not in
+this feed — the `/listings` page routes Miami interest to a text conversation
+with Marco instead.
+
 ## Wiring the CRM (open item)
 
 The intake form POSTs to `/api/lead`, which calls `sendLead()` in
@@ -100,7 +128,6 @@ premium today. Search the code for **`SWAP POINT`** to find each one:
 | About photo | `public/photos/about-interior.jpg` | Replace with a professional portrait of Marco (`src/components/AboutTeaser.astro`). |
 | Buy/Sell panels | `public/photos/work-buy.jpg`, `work-sell.jpg` | Swap for Marco's own sold properties. |
 | Reviews | `src/components/Reviews.astro` | Replace placeholder quotes with real Google/Zillow reviews; swap `reviews-bg.jpg` for a signature listing shot. |
-| Featured listings | `src/components/FeaturedListings.astro` | `listing-*.jpg` are stand-ins. Set `src` per listing and point `href` at the live listing page. Curated by hand — no MLS/IDX approval needed; swap for a live IDX/RESO feed later with no layout change. |
 | Closing photos | `src/pages/about.astro` | Swap the `.shot__ph` placeholders for candid `public/photos/*.jpg`. |
 
 ## Logo
