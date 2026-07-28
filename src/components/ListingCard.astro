@@ -1,0 +1,153 @@
+---
+// One MLS listing card for the /listings grid. Same premium look as the
+// homepage carousel cards (photo, scrim, price overlay), sized by the grid.
+import { fmtPrice, specsLine, type MlsListing } from '../lib/simplyrets';
+
+interface Props {
+  listing: MlsListing;
+  index?: number;
+  eager?: boolean; // eager-load images above the fold
+}
+const { listing: l, index = 0, eager = false } = Astro.props;
+
+const href = `/listings/${l.mlsId}`;
+const photo = l.photos[0];
+const isNew = l.statusText === 'New' || (l.daysOnMarket != null && l.daysOnMarket <= 7);
+const courtesy = l.isMarcoListing
+  ? 'Listed by Marco Puga, eXp Realty'
+  : (l.officeName ? `Courtesy of ${l.officeName}` : '');
+---
+<article class="glcard" data-reveal style={`--i:${Math.min(index % 12, 8)}`}>
+  {photo ? (
+    <img
+      class="glcard__img"
+      src={photo}
+      alt={`${l.address}, ${l.city}, ${l.state}`}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  ) : (
+    <div class="glcard__ph" aria-hidden="true"><span>Marco Puga</span></div>
+  )}
+  <div class="glcard__scrim" aria-hidden="true"></div>
+
+  {(l.isMarcoListing || isNew) && (
+    <span class={`glcard__badge${l.isMarcoListing ? '' : ' glcard__badge--new'}`}>
+      {l.isMarcoListing ? 'Marco’s Listing' : 'New'}
+    </span>
+  )}
+
+  <div class="glcard__meta">
+    <p class="glcard__price">{fmtPrice(l.price, l.isRental)}</p>
+    <p class="glcard__addr">{l.address}</p>
+    <p class="glcard__specs">{[specsLine(l), l.city].filter(Boolean).join(' · ')}</p>
+    {courtesy && <p class="glcard__mls">{courtesy}</p>}
+  </div>
+
+  <a class="glcard__cover" href={href} aria-label={`View ${l.address}, ${l.city}`}></a>
+  <span class="glcard__view" aria-hidden="true">View</span>
+</article>
+
+<style>
+  .glcard {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0b0b0c;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+    transition-delay: calc(var(--i) * 50ms);
+  }
+  .glcard__img,
+  .glcard__ph {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+  .glcard:hover .glcard__img { transform: scale(1.04); }
+  .glcard__ph {
+    display: grid; place-items: center;
+    background: radial-gradient(120% 100% at 30% 0%, #1a1a1d 0%, #050506 70%);
+  }
+  .glcard__ph span {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.28);
+  }
+  .glcard__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 32%, transparent 62%);
+    pointer-events: none;
+  }
+  .glcard__badge {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    z-index: 2;
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--crimson);
+    border-radius: 2px;
+    padding: 0.4rem 0.7rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+  }
+  .glcard__badge--new { background: rgba(11, 11, 12, 0.82); }
+  .glcard__meta {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 1.25rem 1.4rem;
+    color: #fff;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .glcard__price {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    line-height: 1;
+    margin: 0 0 0.5rem;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+  }
+  .glcard__addr {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  }
+  .glcard__specs {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  }
+  .glcard__mls {
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.45rem 0 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  }
+  .glcard__cover { position: absolute; inset: 0; z-index: 2; }
+  .glcard__view {
+    position: absolute;
+    right: 1.1rem; bottom: 1.2rem;
+    z-index: 1;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--crimson);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transition: background 0.25s var(--ease);
+  }
+  .glcard:hover .glcard__view { background: var(--crimson-hover); }
+</style>

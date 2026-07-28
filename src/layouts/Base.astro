@@ -9,14 +9,16 @@ interface Props {
   title?: string;
   description?: string;
   solidHeader?: boolean; // force the solid header on pages that open on a light bg
+  ogImage?: string;      // absolute or site-relative image for social cards
 }
 const {
   title = `${BRAND.name} Real Estate | ${BRAND.tagline}`,
   description = 'Clear, experienced real estate guidance for buyers and sellers across Texas and Miami. From a family’s first home to a listing above a million dollars, you get sharp market insight, careful negotiation, and an advocate who protects your interests.',
   solidHeader = false,
+  ogImage: ogImageProp = '/photos/hero-1.jpg',
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const ogImage = new URL('/photos/hero-1.jpg', Astro.site).toString();
+const ogImage = ogImageProp.startsWith('http') ? ogImageProp : new URL(ogImageProp, Astro.site).toString();
 ---
 <!doctype html>
 <html lang="en">
