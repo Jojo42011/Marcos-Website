@@ -90,6 +90,22 @@ export interface SearchParams {
 
 type Env = Record<string, string | undefined>;
 
+/**
+ * Runtime environment for server code. On Vercel, `import.meta.env` is baked
+ * at build time — env vars added in the dashboard after a build only show up
+ * in `process.env`. Merging both (process.env wins) means new keys take
+ * effect on the next deploy without any code awareness of where they live.
+ */
+export function runtimeEnv(): Env {
+  const fromMeta = import.meta.env as unknown as Env;
+  const fromProcess = typeof process !== 'undefined' && process.env ? process.env : {};
+  const merged: Env = { ...fromMeta };
+  for (const [k, v] of Object.entries(fromProcess)) {
+    if (v != null && v !== '') merged[k] = v;
+  }
+  return merged;
+}
+
 export function hasMlsCredentials(env: Env): boolean {
   return Boolean(env.SIMPLYRETS_API_KEY && env.SIMPLYRETS_API_SECRET);
 }
