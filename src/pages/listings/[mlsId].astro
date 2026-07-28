@@ -2,12 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/Button.astro';
 import { smsHref, MARCO_PHONE, MARCO_PHONE_DISPLAY, telHref, BRAND, OFFICE } from '../../config';
-import { hasMlsCredentials, getProperty, fmtPrice, fmtBaths } from '../../lib/simplyrets';
+import { hasMlsCredentials, runtimeEnv, getProperty, fmtPrice, fmtBaths } from '../../lib/simplyrets';
 
 // Single listing detail — server-rendered from the live MLS feed, CDN-cached.
 export const prerender = false;
 
-const env = import.meta.env as unknown as Record<string, string | undefined>;
+const env = runtimeEnv();
 const { mlsId } = Astro.params;
 
 const listing = hasMlsCredentials(env) && mlsId ? await getProperty(env, mlsId) : null;

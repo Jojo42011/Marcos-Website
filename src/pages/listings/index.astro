@@ -6,6 +6,7 @@ import ListingCard from '../../components/ListingCard.astro';
 import { smsHref, BRAND } from '../../config';
 import {
   hasMlsCredentials,
+  runtimeEnv,
   searchProperties,
   getMarcoListings,
   type MlsListing,
@@ -54,7 +55,7 @@ const SORT_MAP: Record<string, string> = {
 };
 
 // --- fetch -------------------------------------------------------------------
-const env = import.meta.env as unknown as Record<string, string | undefined>;
+const env = runtimeEnv();
 const configured = hasMlsCredentials(env);
 
 let listings: MlsListing[] = [];

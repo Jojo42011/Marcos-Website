@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import {
   hasMlsCredentials,
+  runtimeEnv,
   getMarcoListings,
   searchProperties,
   specsLine,
@@ -31,7 +32,7 @@ function toCard(l: MlsListing) {
 }
 
 export const GET: APIRoute = async () => {
-  const env = import.meta.env as unknown as Record<string, string | undefined>;
+  const env = runtimeEnv();
 
   if (!hasMlsCredentials(env)) {
     return json({ ok: false, error: 'MLS feed not configured.' }, 503);
