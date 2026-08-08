@@ -3,12 +3,16 @@ import Base from '../layouts/Base.astro';
 import { SMS_DISPLAY, BRAND } from '../config';
 
 // SMS opt-in consent page. Built for A2P / toll-free messaging verification:
-// a real opt-in form with a mobile number field and an unchecked consent
-// checkbox whose label carries all the required disclosures (brand, message
-// types, rates, frequency, HELP/STOP, and a Privacy Policy link).
+// a real opt-in form with a mobile number field and an unchecked, OPTIONAL
+// consent checkbox whose label carries all the required disclosures (brand,
+// message types, rates, frequency, HELP/STOP, and a Privacy Policy link).
+// Carrier registration requires that consent is not a condition of
+// submitting the form, so the checkbox never blocks submission.
 //
 // The Privacy Policy link points at Marco's messaging privacy policy (Quo).
+// The site's own Terms & Conditions live at /terms and are a separate document.
 const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
+const TERMS_URL = '/terms';
 ---
 <Base
   title={`Text Message Consent | ${BRAND.name} Real Estate`}
@@ -21,7 +25,7 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
       <h1 class="smsc__title">Get Text Updates From Marco</h1>
       <p class="smsc__lead">
         Sign up to receive property information, home breakdowns, and appointment reminders by
-        text. Enter your mobile number, check the box to confirm you consent, and you are set.
+        text. Enter your mobile number and you are set. Checking the consent box is optional.
       </p>
 
       <form class="smsc__form" data-smsc novalidate>
@@ -41,12 +45,14 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
           <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
         </div>
 
-        <!-- Consent checkbox: unchecked by default, required. The label holds
-             all eight disclosure elements. Placed directly above the submit
-             button so the opt-in and the action read as one step. -->
+        <!-- Consent checkbox: unchecked by default and OPTIONAL. It never
+             blocks submission. The label holds all the disclosure elements.
+             Placed directly above the submit button so the opt-in and the
+             action read as one step. -->
         <label class="smsc__consent">
-          <input type="checkbox" name="smsConsent" value="yes" required />
+          <input type="checkbox" name="smsConsent" value="yes" />
           <span class="smsc__consent-text">
+            <em class="smsc__optional">Optional.</em>
             I would like to receive updates by text. We&rsquo;ll be sending you property
             information, home breakdowns, and appointment reminders from {BRAND.name} Real Estate.
             Message and data rates may apply. Message frequency varies. At any time you can text
@@ -61,8 +67,8 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
           <div class="smsc__done-mark" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="26" height="26"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
           </div>
-          <h2>You are signed up.</h2>
-          <p>Thanks for opting in. You can reply STOP at any time to opt out, or HELP for help.</p>
+          <h2>You are all set.</h2>
+          <p>Thanks for reaching out. If you receive texts from us, you can reply STOP at any time to opt out, or HELP for help.</p>
         </div>
 
         <p class="smsc__error" data-error hidden role="alert"></p>
@@ -78,8 +84,16 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
           <li><strong>Message and data rates</strong> may apply.</li>
           <li><strong>Help:</strong> reply HELP at any time, or reach Marco at {SMS_DISPLAY}.</li>
           <li><strong>Opt out:</strong> reply STOP at any time to stop receiving messages.</li>
-          <li><strong>Privacy:</strong> your information is never sold or shared with third parties for their marketing. See our <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">SMS Terms &amp; Privacy</a>.</li>
+          <li><strong>Consent is optional:</strong> checking the consent box is not required to submit the form or to work with {BRAND.name} Real Estate.</li>
+          <li><strong>Privacy:</strong> your information is never sold or shared with third parties for their marketing.</li>
         </ul>
+        <div class="smsc__docs">
+          <p>Two separate documents govern this page, each covering different things:</p>
+          <ul>
+            <li><a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">SMS Terms &amp; Privacy</a> covers the text messaging program and how your information is handled.</li>
+            <li><a href={TERMS_URL}>Terms &amp; Conditions</a> covers use of this website.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -136,6 +150,7 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
   }
   .smsc__consent-text { font-size: 0.92rem; line-height: 1.6; color: var(--ink); }
   .smsc__consent-text a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+  .smsc__optional { font-style: normal; font-weight: 600; color: var(--muted); }
 
   .smsc__submit {
     width: 100%;
@@ -170,6 +185,10 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
   .smsc__terms li { line-height: 1.55; }
   .smsc__terms strong { color: var(--ink); font-weight: 600; }
   .smsc__terms a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+  .smsc__docs { margin-top: 1.25rem; color: var(--muted); }
+  .smsc__docs p { margin: 0 0 0.6rem; }
+  .smsc__docs ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
+  .smsc__docs li { line-height: 1.55; }
 
   @media (max-width: 520px) {
     .smsc__grid { grid-template-columns: 1fr; }
@@ -192,14 +211,16 @@ const PRIVACY_URL = 'https://www.quo.com/policies/ORhea1mzKM';
       const contact = (form.elements.namedItem('contact') as HTMLInputElement)?.value.trim();
       const consent = (form.elements.namedItem('smsConsent') as HTMLInputElement)?.checked;
       if (!contact) { showErr('Enter the mobile number where you would like to receive texts.'); return; }
-      if (!consent) { showErr('Please check the box to confirm you consent to receive text messages.'); return; }
 
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing you up…'; }
 
-      // Reuse the lead endpoint. intent/reason give Marco context on the opt-in.
+      // Reuse the lead endpoint. intent/reason give Marco context, including
+      // whether the optional consent box was checked.
       const body = new FormData(form);
       body.set('intent', 'SMS updates');
-      body.set('reason', 'Opted in to SMS text updates via the consent page.');
+      body.set('reason', consent
+        ? 'Submitted the SMS consent page and checked the optional consent box.'
+        : 'Submitted the SMS consent page without checking the optional consent box.');
       try {
         const res = await fetch('/api/lead', { method: 'POST', body });
         const out = await res.json().catch(() => ({ ok: false }));

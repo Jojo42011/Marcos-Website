@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import { BRAND, EMAIL, SMS_DISPLAY, mailtoHref } from '../config';
+
+// Website Terms & Conditions. A separate document from the SMS Terms &
+// Privacy policy (hosted on Quo), which governs the text messaging program.
+// This page covers use of the website itself.
+---
+<Base
+  title={`Terms & Conditions | ${BRAND.name} Real Estate`}
+  description="Terms and conditions for using the Marco Puga Real Estate website."
+  solidHeader={true}
+>
+  <section class="terms">
+    <div class="container container--tight">
+      <p class="label">Legal</p>
+      <h1 class="terms__title">Terms &amp; Conditions</h1>
+      <p class="terms__lead">
+        These terms cover your use of this website, operated by {BRAND.name} Real Estate.
+        By using the site, you agree to them. They are a separate document from our
+        SMS Terms &amp; Privacy policy, which governs our text messaging program.
+      </p>
+
+      <div class="terms__body">
+        <h2>Use of this website</h2>
+        <p>
+          This website is provided for general information about {BRAND.name} Real Estate and
+          the real estate services we offer. You may browse the site, view listings, and use
+          the contact and sign up forms for their intended purpose. You agree not to misuse
+          the site, interfere with its operation, or use it for any unlawful purpose.
+        </p>
+
+        <h2>No guarantee of accuracy</h2>
+        <p>
+          Real estate information on this site, including listings, prices, availability,
+          property details, and market commentary, is provided for convenience only and is
+          not guaranteed to be accurate, complete, or current. Listing data comes from third
+          party sources and can change or contain errors. Nothing on this site is an offer,
+          a contract, or professional advice. Always verify important details independently
+          before making any real estate decision.
+        </p>
+
+        <h2>Questions</h2>
+        <p>
+          If you have any questions about these terms, contact {BRAND.name} Real Estate at
+          <a href={mailtoHref(EMAIL)}>{EMAIL}</a> or {SMS_DISPLAY}.
+        </p>
+
+        <h2>Changes to these terms</h2>
+        <p>
+          We may update these terms from time to time. The current version will always be
+          posted on this page, and continued use of the site means you accept the updated
+          terms.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .terms {
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 4vw, 3rem));
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .terms__title { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+  .terms__lead { color: var(--muted); font-size: var(--step-1); max-width: 60ch; margin-bottom: 2.5rem; }
+
+  .terms__body h2 { font-size: var(--step-1); margin: 2rem 0 0.75rem; }
+  .terms__body h2:first-child { margin-top: 0; }
+  .terms__body p { color: var(--muted); line-height: 1.7; max-width: 68ch; }
+  .terms__body a { color: var(--crimson); font-weight: 600; text-decoration: underline; }
+</style>
